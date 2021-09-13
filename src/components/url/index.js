@@ -1,0 +1,1 @@
+export default 'https://rabdesignstories.com/clickuc/api/';

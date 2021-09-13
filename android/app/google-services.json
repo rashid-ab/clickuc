@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "790435134413",
+    "project_id": "clicki-42082",
+    "storage_bucket": "clicki-42082.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:790435134413:android:d647b472341cd2856aa284",
+        "android_client_info": {
+          "package_name": "com.clicki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "790435134413-e969i80u7j59ig1oelap9kbku5plu5s9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJ2UUrRsfjJwYYW2oEJRStgmz5_2aGFXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "790435134413-e969i80u7j59ig1oelap9kbku5plu5s9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
