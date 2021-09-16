@@ -33,7 +33,7 @@ class DrawerContainer extends React.Component {
         <View style={styles.container}>
           <MenuButton
             title="Home"
-            source={require('../../assets/profile.jpeg')}
+            source={require('../../assets/home.png')}
             onPress={() => {
               navigation.navigate('Home');
               navigation.closeDrawer();
@@ -41,7 +41,7 @@ class DrawerContainer extends React.Component {
           />
           <MenuButton
             title="MyWallet"
-            source={require('../../assets/profile.jpeg')}
+            source={require('../../assets/wallets.png')}
             onPress={() => {
               navigation.navigate('MyWallet');
               navigation.closeDrawer();
@@ -49,23 +49,15 @@ class DrawerContainer extends React.Component {
           />
           <MenuButton
             title="ChangePassword"
-            source={require('../../assets/profile.jpeg')}
+            source={require('../../assets/change_password.png')}
             onPress={() => {
               navigation.navigate('ChangePassword');
               navigation.closeDrawer();
             }}
           />
           <MenuButton
-            title="PrivacyPolicy"
-            source={require('../../assets/profile.jpeg')}
-            onPress={() => {
-              navigation.navigate('PrivacyPolicy');
-              navigation.closeDrawer();
-            }}
-          />
-          <MenuButton
             title="Logout"
-            source={require('../../assets/profile.jpeg')}
+            source={require('../../assets/logout.png')}
             onPress={
                 async () => {
                 await AsyncStorage.setItem('user','');

@@ -13,7 +13,7 @@ import {
   AdMobInterstitial,
   PublisherBanner,
   AdMobRewarded,
-} from 'react-native-admob'
+} from 'react-native-admob-alpha'
 import Ad from '../components/Ad'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 const screeWidth = Dimensions.get('window').width
@@ -116,7 +116,7 @@ class Crate extends Component {
               }
               if(adss==0){
                 this.interstitial_ad();
-                this.props.getads(4)
+                this.props.getads(3)
               }
               else{
                 this.props.getads(adss)

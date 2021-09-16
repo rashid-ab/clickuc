@@ -14,7 +14,7 @@ import Ad from '../components/Ad'
 import axios from 'axios';
 import {
   AdMobBanner,
-} from 'react-native-admob'
+} from 'react-native-admob-alpha'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 export default class Home extends Component {
   constructor(props) {
@@ -36,7 +36,6 @@ export default class Home extends Component {
         user = JSON.parse(user);
         console.log(user)
     let fcmtoken = await AsyncStorage.getItem('fcmtoken');
-    console.log('fcmtoken',fcmtoken)
       axios({
         method: "POST",
         url: url + "tokenupdate",
@@ -47,7 +46,6 @@ export default class Home extends Component {
         }
       })
       .then(async({ data: response }) => {
-        console.log('asas',response)
         if(response.message=='failure'){
             alert('Your Token is expire. Please login again')
             await AsyncStorage.setItem('user','');

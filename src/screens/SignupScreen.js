@@ -8,8 +8,10 @@ import {
 } from 'react-native';
 import url from '../components/url'
 import axios from "axios";
+import AsyncStorage from '@react-native-community/async-storage'
+import { connect } from 'react-redux';
 import Loader from '../components/Loader'
-export default class SignUp extends Component {
+class SignUp extends Component {
 
   constructor(props) {
     super(props);
@@ -20,7 +22,37 @@ export default class SignUp extends Component {
       Loadingvisible:false,
     }
   }
-
+login=()=>{
+  axios({
+    method: "POST",
+    url: url + "auth/login",
+    timeout: 10000,
+    data: {
+      email: this.state.email,
+      password: this.state.password,
+    }
+  })
+    .then(async({ data: response }) => {
+      if(response.message=='success'){
+        await AsyncStorage.setItem('user',JSON.stringify(response.user))
+        this.props.user(response.user)
+        this.props.coins(response.user.coins)
+        this.props.uc(response.user.uc)
+        this.props.silverLimit(response.user.silver_limit)
+        this.props.goldenLimit(response.user.golden_limit)
+        this.props.platinumLimit(response.user.platinum_limit)
+        this.setState({ Loadingvisible: false });
+        return this.props.navigation.replace('Home')
+      }
+      else{
+        this.setState({ Loadingvisible: false });
+        return alert(response.message)
+      }
+    })
+    .catch(function (response) {
+      return alert('May be Your Internet Lost!')
+    });
+}
   onClickListener = (event) => {
     if(event=='signup'){
       if(this.state.name==''){
@@ -45,10 +77,9 @@ export default class SignUp extends Component {
         }
       })
         .then(({ data: response }) => {
-          console.log(response);
-          this.setState({ Loadingvisible: false });
+          
           if(response.message=='success'){
-            return this.props.navigation.navigate('Login')
+            this.login()
           }
           else{
             this.setState({ Loadingvisible: false });
@@ -56,7 +87,7 @@ export default class SignUp extends Component {
           }
         })
         .catch(function (response) {
-          //handle error
+          this.setState({ Loadingvisible: false });
           alert('May be Your Internet Lost!')
         });
     }
@@ -92,7 +123,7 @@ export default class SignUp extends Component {
             placeholderTextColor='#989997' 
             onChangeText={text => this.setState({password:text})}/>
         </View>
-        <TouchableOpacity style={styles.loginBtn} onPress={this.onClickListener}>
+        <TouchableOpacity style={styles.loginBtn} onPress={()=>this.onClickListener('signup')}>
           <Text style={styles.loginText}>SignUp</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={()=>this.props.navigation.navigate('Login')}>
@@ -148,3 +179,28 @@ const styles = StyleSheet.create({
     color:"white"
   }
 });
+const mapDispatchToProps = dispatch => {
+  return {
+    
+    user: user => {
+      dispatch({ type: 'USER', user: user });
+    },
+    coins: coins => {
+      dispatch({ type: 'COINS', coins: coins });
+    },
+    uc: uc => {
+      dispatch({ type: 'UC', uc: uc });
+    },
+    silverLimit: silverLimit => {
+      dispatch({ type: 'SILVERLIMIT', silverLimit: silverLimit });
+    },
+    goldenLimit: goldenLimit => {
+      dispatch({ type: 'GOLDENLIMIT', goldenLimit: goldenLimit });
+    },
+    platinumLimit: platinumLimit => {
+      dispatch({ type: 'PLATINUMLIMIT', platinumLimit: platinumLimit });
+    },
+    
+  };
+};
+export default connect(null, mapDispatchToProps)(SignUp);

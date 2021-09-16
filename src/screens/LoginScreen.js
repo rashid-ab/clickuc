@@ -18,8 +18,8 @@ import { ScrollView } from 'react-native-gesture-handler';
   constructor(props) {
     super(props);
     this.state = {
-      email   : 'rashidbuttuog@gmail.com',
-      password: 'respecteduc', 
+      email   : '',
+      password: '', 
       Loadingvisible:false
     }
   }

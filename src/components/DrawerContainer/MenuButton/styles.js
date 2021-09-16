@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 const styles = StyleSheet.create({
   btnClickContain: {
     flexDirection: 'row',
-    padding: "2%",
+    padding: "3%",
     marginTop: 5,
     marginBottom: 5,
     borderBottomWidth:1,

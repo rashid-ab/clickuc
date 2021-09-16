@@ -15,7 +15,7 @@ import {
   AdMobInterstitial,
   PublisherBanner,
   AdMobRewarded,
-} from 'react-native-admob'
+} from 'react-native-admob-alpha'
 import Ad from '../components/Ad'
 import Loader from '../components/Loader'
 import Header from '../components/header';
@@ -25,7 +25,7 @@ import axios from 'axios'
 import { connect } from 'react-redux';
 import AsyncStorage from '@react-native-community/async-storage';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-const uc = [66,361,750];
+const uc = [60,300,600];
 class MyWallet extends Component {
   
   constructor(props) {
@@ -51,6 +51,7 @@ class MyWallet extends Component {
     });
   }
   onClickListener = (viewId) => {
+    console.log(this.state.ucs)
     if(this.state.ucs==''){
       return alert('Select UC Package')
     }
@@ -82,6 +83,7 @@ class MyWallet extends Component {
                     token:this.props.user.token,
                     uc: this.state.ucs,
                     id: this.state.id,
+                    user_id: this.props.user.id,
                   }
                 })
                 .then(async({ data: response }) => {
@@ -128,8 +130,9 @@ class MyWallet extends Component {
             <Image source={require('../assets/uc.png')} style={{height:hp('2.5%'),width:hp('4%')}}/>
             <Text style={{fontWeight:'bold',fontSize:hp('2.0%'),color:'white'}}> X {this.props.uc}</Text>
           </View>
-          <Text style={{color:'white'}}>Minimum Redeem = 66UC</Text>
+          <Text style={{color:'white'}}>Minimum Redeem = 60UC</Text>
           <Text style={{color:'white'}}>1000 coins = 1UC</Text>
+          <Text style={{color:'white'}}>50th redeem = UC+UC</Text>
         </View>
         <View style={styles.inputView} >
           <TextInput 

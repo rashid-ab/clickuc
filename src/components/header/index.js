@@ -11,6 +11,9 @@ import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-nativ
 class Header extends Component {
   constructor(props) {
     super(props);
+    this.state={
+      image_path:this.props.route=='Crate'?require('../../assets/back.png'):require('../../assets/burger.png')
+    }
   }
   openDrawer = () => {
     this.props.navigation.toggleDrawer()
@@ -29,14 +32,14 @@ class Header extends Component {
         <View style={styles.header}>
           <View style={styles.header_body}>
             {this.props.route!="Scratch"?
-            <TouchableOpacity onPress={()=>this.openDrawer()}>
-              <Image source={require('../../assets/burger.png')} style={{width:wp('8%'),height:hp('3%')}}/>
+            <TouchableOpacity onPress={()=>this.props.route=='Crate'?this.props.navigation.goBack():this.openDrawer()}>
+              <Image source={this.state.image_path} style={{width:wp('8%'),height:hp('3%')}}/>
             </TouchableOpacity>
             :
             <TouchableOpacity >
             </TouchableOpacity>
             }
-            <Text style={{color:'#4B937A',fontSize:hp('4%'),fontWeight:'bold'}}>{this.props.route}</Text>
+            <Text style={{color:'#4B937A',fontSize:hp('3%'),fontWeight:'bold'}}>{this.props.route}</Text>
             <View style={styles.coinsView}>
               <View style={styles.coins}>
                 <Image source={require('../../assets/coin.png')} style={{width:wp('5%'),height:hp('3%')}}/>

@@ -11,7 +11,6 @@ import ForgetPassword from "../screens/ForgetPassword";
 import Home from "../screens/HomeScreen";
 import MyWallet from "../screens/MyWallet";
 import ChangePassword from "../screens/ChangePassword";
-import PrivacyPolicy from "../screens/PrivacyPolicy";
 import Crate from "../screens/Crate";
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -41,11 +40,6 @@ const Drawer = createDrawerNavigator();
           name="ChangePassword"
           // options={{ drawerLabel: 'First page Option' }}
           component={ChangePassword}
-        />
-        <Drawer.Screen
-          name="PrivacyPolicy"
-          // options={{ drawerLabel: 'First page Option' }}
-          component={PrivacyPolicy}
         />
       </Drawer.Navigator>
     );

@@ -26,7 +26,7 @@ class Auth extends Component {
         url: url + 'getUser',
         data: {
           'email': auth.email,
-          'token': auth.token.toString(),
+          'token': auth.token,
         }
       })
       .then(async({ data: response }) => {

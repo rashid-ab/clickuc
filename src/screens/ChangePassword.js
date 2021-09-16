@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import {
   AdMobBanner,
-} from 'react-native-admob'
+} from 'react-native-admob-alpha'
 import Ad from '../components/Ad'
 import Loader from '../components/Loader'
 import Header from '../components/header';
@@ -55,6 +55,7 @@ export default class Home extends Component {
         }
           if(response.message=='success'){
             alert(response.data)
+            this.props.navigation.replace('Login')
             this.setState({ Loadingvisible: false,password:'' });
           }
           else{
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
   },
   logo:{
     fontWeight:"bold",
-    fontSize:hp('6%'),
+    fontSize:hp('4%'),
     color:"#4B937A",
     marginBottom:40
   },
