@@ -54,9 +54,9 @@ const Drawer = createDrawerNavigator();
             headerShown: false,
             headerStyle: {
             backgroundColor: '#00b5ec',
-            textAlign: 'center',
+            // textAlign: 'center',
             },
-            headerTitleAlign: 'center',
+            // headerTitleAlign: 'center',
             headerTintColor:'white'
             }}>
           <Stack.Screen name="Auth" component={Auth} />

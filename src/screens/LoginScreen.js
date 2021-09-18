@@ -13,6 +13,7 @@ import axios from 'axios'
 import AsyncStorage from '@react-native-community/async-storage'
 import { connect } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
+import {AlertMessage} from '../components/Alert'
  class Login extends Component {
 
   constructor(props) {
@@ -26,14 +27,14 @@ import { ScrollView } from 'react-native-gesture-handler';
   onClickListener = (event) => {
     if(event=='login'){
       if(this.state.email==''){
-        return alert('Enter Your Email')
+        return AertMessage('Error','Enter Your Email','red')
       }
       if(this.state.password==''){
-        return alert('Enter Your Password')
+        return AertMessage('Error','Enter Your Password','red')
       }
       let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
       if (reg.test(this.state.email) === false) {
-        return alert("Email is Not Correct");
+        return AertMessage("Email is Not Correct");
       }
       this.setState({Loadingvisible:true})
       axios({
@@ -59,11 +60,12 @@ import { ScrollView } from 'react-native-gesture-handler';
           }
           else{
             this.setState({ Loadingvisible: false });
-            return alert(response.message)
+            return AlertMessage('Connection Failed','Check Your Internet','red')
+            
           }
         })
         .catch(function (response) {
-          return alert('May be Your Internet Lost!')
+          AlertMessage('Connection Failed','Check Your Internet','red')
         });
     }
     if(event=='signup'){

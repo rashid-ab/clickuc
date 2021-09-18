@@ -6,15 +6,12 @@ import {
   TextInput,
   TouchableOpacity,
   Image,
-  ImageBackground,
   ScrollView, 
   Alert
 } from 'react-native';
 import {
   AdMobBanner,
   AdMobInterstitial,
-  PublisherBanner,
-  AdMobRewarded,
 } from 'react-native-admob-alpha'
 import Ad from '../components/Ad'
 import Loader from '../components/Loader'
@@ -23,6 +20,7 @@ import SelectDropdown from 'react-native-select-dropdown'
 import url from '../components/url'
 import axios from 'axios'
 import { connect } from 'react-redux';
+import {AlertMessage} from '../components/Alert'
 import AsyncStorage from '@react-native-community/async-storage';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 const uc = [60,300,600];
@@ -53,16 +51,17 @@ class MyWallet extends Component {
   onClickListener = (viewId) => {
     console.log(this.state.ucs)
     if(this.state.ucs==''){
-      return alert('Select UC Package')
+      return AertMessage('Error','Pllease Select UC Package!','red')
     }
     if(this.state.id==''){
-      return alert('Enter Your PUBG ID')
+      return AlertMessage('Error','Enter Your PUBG ID','red')
     }
     if(this.state.id.length<10 || this.state.id.length>10){
-      return alert('Your PUBG ID should be 10 characters.!')
+      return AlertMessage('Error','Your PUBG ID should be 10 characters.!','red')
+      
     }
     if(this.props.uc<this.state.ucs){
-      return alert('You have less UC than '+this.state.ucs)
+      return AlertMessage('Error','You have less UC than '+this.state.ucs,'red')
     }
     Alert.alert(
       "Confirm Your PUBG ID",
@@ -88,10 +87,10 @@ class MyWallet extends Component {
                 })
                 .then(async({ data: response }) => {
                   if(response.message=='failure'){
-                      alert('Your Token is expire. Please login again')
+                      AlertMessage('Token Expired','Your Token Expired. Login again Please!','red')
                       await AsyncStorage.setItem('user','');
                       await AsyncStorage.setItem('fcmtoken','');
-                    this.props.navigation.replace('Login')
+                      this.props.navigation.replace('Login')
                   }
                     if(response.message=='success'){
                       alert('Great! UC will sent you within 24 hours!');
@@ -102,12 +101,12 @@ class MyWallet extends Component {
                     }
                     else{
                       this.setState({ Loadingvisible: false });
-                      alert('You should check your Internet!')
+                      AlertMessage('Connection Failed','Check Your Internet','red')
                     }
                   })
                   .catch(function (response) {
-                    this.setState({ Loadingvisible: false });
-                      alert('You should check your Internet!')
+                      this.setState({ Loadingvisible: false });
+                      AlertMessage('Connection Failed','Check Your Internet','red')
                   });
         } }
       ]

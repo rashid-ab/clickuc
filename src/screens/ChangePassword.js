@@ -5,12 +5,10 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Image,
   TextInput,
-  ImageBackground,
-  ScrollView,
   
 } from 'react-native';
+import {AlertMessage} from '../components/Alert'
 import {
   AdMobBanner,
 } from 'react-native-admob-alpha'
@@ -26,6 +24,7 @@ export default class Home extends Component {
     super(props);
     this.state = {
       password: '',
+      old_password: '',
       Loadingvisible:false
     }
   }
@@ -34,7 +33,10 @@ export default class Home extends Component {
       let user = await AsyncStorage.getItem('user')
       user = JSON.parse(user);
       if(this.state.password==''){
-        return alert('Enter Your Password')
+        return AlertMessage('Error','Please Enter New Password!')
+      }
+      if(this.state.old_password==''){
+        return AlertMessage('Error','Please Enter Old Password!')
       }
       this.setState({Loadingvisible:true})
       axios({
@@ -43,35 +45,32 @@ export default class Home extends Component {
         data: {
           email: user.email,
           password: this.state.password,
+          old_password: this.state.old_password,
           token:user.token,
         }
       })
       .then(async({ data: response }) => {
         if(response.message=='failure'){
-            alert('Your Token is expire. Please login again')
+            AlertMessage('Token Expired','Your Token Expired. Login again Please!','red')
             await AsyncStorage.setItem('user','');
             await AsyncStorage.setItem('fcmtoken','');
           this.props.navigation.replace('Login')
         }
           if(response.message=='success'){
-            alert(response.data)
-            this.props.navigation.replace('Login')
+            AlertMessage('Success',response.data,'#4B937A')
             this.setState({ Loadingvisible: false,password:'' });
+            this.props.navigation.replace('Login')
+            
           }
           else{
             this.setState({ Loadingvisible: false });
-            alert('Something Wrong!')
+            AlertMessage('Failed',response.data,'red')
           }
         })
         .catch(function (response) {
-          //handle error
-          console.log(response);
+          AlertMessage('Connection Failed','Check Your Internet','red')
         });
     }
-    if(event=='signup'){
-    this.props.navigation.navigate('SignUp')
-    }
-    
   }
   render() {
     return (
@@ -84,7 +83,15 @@ export default class Home extends Component {
           <View style={styles.inputView} >
             <TextInput  
               style={styles.inputText}
-              placeholder="Password..." 
+              placeholder="Old Password..." 
+              placeholderTextColor='#989997'
+              secureTextEntry={true} 
+              onChangeText={old_password => this.setState({old_password:old_password})}/>
+          </View>
+          <View style={styles.inputView} >
+            <TextInput  
+              style={styles.inputText}
+              placeholder="New Password..." 
               placeholderTextColor='#989997'
               secureTextEntry={true} 
               onChangeText={password => this.setState({password:password})}/>

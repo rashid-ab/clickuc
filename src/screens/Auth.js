@@ -5,6 +5,7 @@ import Loader from '../components/Loader'
 import { connect } from 'react-redux';
 import url from '../components/url'
 import axios from 'axios'
+import {AlertMessage} from '../components/Alert'
 // import VersionCheck from 'react-native-version-check';
 class Auth extends Component {
   constructor(props){
@@ -55,7 +56,7 @@ class Auth extends Component {
           }
         })
         .catch(async function (response) {
-            alert('May be Your Internet Lost!')
+          return AlertMessage('Error','Check Your Internet','red')
         });
     }
         

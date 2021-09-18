@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import Loader from '../components/Loader'
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Animatable from 'react-native-animatable';
+import {AlertMessage} from '../components/Alert'
 import {
   AdMobBanner,
   AdMobInterstitial,
@@ -17,9 +18,9 @@ import {
 import Ad from '../components/Ad'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 const screeWidth = Dimensions.get('window').width
-const silverNumbers=[8,9,10,11,12,2,3,13,14,3,2,1,15,16,17,18,7,19,20]
-const goldenNumbers=[5,6,7,8,9,10,11,5,6,12,13,2,14,15,16,4,3,6,7,17,18,19,20,21,5,8,7,9,5,22,23,24,24,25,26,27,28,29,5,4,30]
-const platinumNumbers=[8,9,10,11,12,13,14,15,16,17,18,19,20,218,7,9,5,22,23,24,25,26,27,28,29,30,31,32,33,1,34,35,36,37,38,39,40]
+const silverNumbers=[8,9,10,11,12,13,14,15,16,17,18,19,20]
+const goldenNumbers=[10,16,17,18,19,20,21,22,23,24,24,25,26,27,28,29,30,31,32,33,1,34,35,36,37,38,39,40]
+const platinumNumbers=[15,19,20,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50]
 class Crate extends Component {
     constructor(props) {
         super(props);
@@ -57,10 +58,10 @@ class Crate extends Component {
       })
       .then(async({ data: response }) => {
         if(response.message=='failure'){
-            alert('Your Token is expire. Please login again')
+            AlertMessage('Token Expired','Your Token Expired. Login again Please!')
             await AsyncStorage.setItem('user','');
             await AsyncStorage.setItem('fcmtoken','');
-          this.props.navigation.replace('Login')
+            this.props.navigation.replace('Login')
 
         }
           if(response.message=='success'){
@@ -69,12 +70,12 @@ class Crate extends Component {
           }
           else{
             this.setState({ isVisible: false });
-            console.log('May be Your Internet Lostqw!')
+            return AlertMessage('Connection Failed','Check Your Internet')
           }
         })
         .catch(function (response) {
-          // this.setState({ isVisible: false });
-          console.log('May be Your Internet Lostas!')
+          this.setState({ isVisible: false });
+          return AlertMessage('Connection Failed','Check Your Internet')
         });
         this.componentDidMount();
     }
@@ -88,7 +89,6 @@ class Crate extends Component {
         var scratch_url=this.props.route.params.title=='Supply Crate'?'silver_coins':this.props.route.params.title=='Classic Crate'?'golden_coins':'platinum_coins'
         var newCoins=parseInt(this.props.coins) + parseInt(this.state.coins);
         var newUC=newCoins/1000;
-        console.log('this.state.limit',url + scratch_url)
         axios({
           method: "POST",
           url: url + scratch_url,
@@ -100,12 +100,11 @@ class Crate extends Component {
           }
         })
           .then(async({ data: response }) => {
-            console.log('resp',response)
             if(response.message=='failure'){
-                alert('Your Token is expire. Please login again')
+                AlertMessage('Token Expired','Your Token Expired. Login again Please!')
                 await AsyncStorage.setItem('user','');
                 await AsyncStorage.setItem('fcmtoken','');
-              this.props.navigation.replace('Login')
+                this.props.navigation.replace('Login')
 
             }
             if(response.message=='success'){
@@ -121,25 +120,29 @@ class Crate extends Component {
               else{
                 this.props.getads(adss)
               }
-              this.setState({limit:response.limit})
               this.props.getcoins(response.coins)
               this.props.getuc(response.uc)
               this.props.route.params.title=='Supply Crate'?this.props.getsilverlimit(response.limit):this.props.route.params.title=='Classic Crate'?this.props.getgoldenlimit(response.limit):this.props.getplatinumlimit(response.limit)
+              this.setState(
+                {
+                  coins:silverNumbers[Math.floor(Math.random()*silverNumbers.length)],
+                  isVisible:false,
+                  limit:response.limit
+                },
+              );
             }
             else{
               this.setState({ isVisible: false });
-              alert('May be Your Internet Lost!')
+              return AlertMessage('Connection Failed','Check Your Internet')
             }
           })
           .catch(function (response) {
             // this.setState({ isVisible: false });
-            alert(response)
+            return AlertMessage('Connection Failed','Check Your Internet')
           });
       }
       componentDidMount=()=>{
         this.focusListener = this.props.navigation.addListener("focus", () => {
-          console.log('qaqaqa')
-          
           this.setState({
             coins:this.props.route.params.title=='Supply Crate'?silverNumbers[Math.floor(Math.random()*silverNumbers.length)]:this.props.route.params.title=='Classic Crate'?goldenNumbers[Math.floor(Math.random()*goldenNumbers.length)]:platinumNumbers[Math.floor(Math.random()*platinumNumbers.length)],
             limit:this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit
@@ -175,7 +178,7 @@ class Crate extends Component {
                 </View>
                 <View style={{flex:.11,justifyContent:'center',alignItems:'center'}}>
                   {this.state.limit!=0?
-                    <Text style={{fontSize:hp('2.2%'),fontWeight:'bold',color:'white'}}>Your Crate limit left = {this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit}</Text>
+                    <Text style={{fontSize:hp('2.5%'),fontWeight:'bold',color:'white'}}>Your Crate limit left = {this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit}</Text>
                   :
                     <Text style={{fontSize:hp('3.2%'),fontWeight:'bold',color:'white'}}>Watch Ad to Open more Crates</Text>
                   }
@@ -217,12 +220,12 @@ class Crate extends Component {
                             <Image source={require('../assets/coin.png')}  style={{width:30,height:30}}/>
                             <Text style={styles.modalText}>x {this.state.coins}</Text>
                           </View>
-                        <Pressable
+                        {/* <Pressable
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => this.reset()}
                         >
                             <Text style={styles.textStyle}>Collect</Text>
-                        </Pressable>
+                        </Pressable> */}
                         </View>
                     </View>
                 </Modal>

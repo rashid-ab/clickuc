@@ -12,6 +12,7 @@ import Header from '../components/header';
 import url from '../components/url'
 import Ad from '../components/Ad'
 import axios from 'axios';
+import {AlertMessage} from '../components/Alert'
 import {
   AdMobBanner,
 } from 'react-native-admob-alpha'
@@ -32,6 +33,7 @@ export default class Home extends Component {
     };
   }
   componentDidMount = async() => {
+  
     let user = await AsyncStorage.getItem('user');
         user = JSON.parse(user);
         console.log(user)
@@ -60,7 +62,7 @@ export default class Home extends Component {
         })
         .catch(function (response) {
           //handle error
-          alert(response);
+          return AlertMessage('Error','Check Your Internet')
         });
   }
   clickEventListener(title) {
@@ -163,14 +165,6 @@ const styles = StyleSheet.create({
   },
   /******** card **************/
   card:{
-    shadowColor: '#D38700',
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.37,
-    shadowRadius: 7.49,
-    elevation: 12,
     marginVertical: 20,
     marginHorizontal: 10,
     backgroundColor:"white",

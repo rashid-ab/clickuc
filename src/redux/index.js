@@ -7,7 +7,7 @@ const initialState = {
   silverLimit: '',
   goldenLimit: '',
   platinumLimit: '',
-  ads: 4,
+  ads: 3,
   goldenads: 4,
   platinumads: 3,
   coins: 10,

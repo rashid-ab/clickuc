@@ -31,23 +31,19 @@ class Header extends Component {
     return (
         <View style={styles.header}>
           <View style={styles.header_body}>
-            {this.props.route!="Scratch"?
+            
             <TouchableOpacity onPress={()=>this.props.route=='Crate'?this.props.navigation.goBack():this.openDrawer()}>
               <Image source={this.state.image_path} style={{width:wp('8%'),height:hp('3%')}}/>
             </TouchableOpacity>
-            :
-            <TouchableOpacity >
-            </TouchableOpacity>
-            }
             <Text style={{color:'#4B937A',fontSize:hp('3%'),fontWeight:'bold'}}>{this.props.route}</Text>
             <View style={styles.coinsView}>
               <View style={styles.coins}>
                 <Image source={require('../../assets/coin.png')} style={{width:wp('5%'),height:hp('3%')}}/>
-                <Text style={styles.coins_text}>{this.numFormatter(this.props.coins)}</Text>
+                <Text style={styles.coins_text}>{this.props.coins}</Text>
               </View>
               <View style={styles.coins}>
                 <Image source={require('../../assets/uc.png')} style={{width:wp('6%'),height:hp('3%')}}/>
-                <Text style={styles.coins_text}>{this.numFormatter(this.props.uc)}</Text>
+                <Text style={styles.coins_text}>{this.props.uc}</Text>
               </View>
             </View>
           </View>
