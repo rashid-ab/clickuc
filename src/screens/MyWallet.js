@@ -49,9 +49,8 @@ class MyWallet extends Component {
     });
   }
   onClickListener = (viewId) => {
-    console.log(this.state.ucs)
     if(this.state.ucs==''){
-      return AertMessage('Error','Pllease Select UC Package!','red')
+      return AertMessage('Error','Please Select UC Package!','red')
     }
     if(this.state.id==''){
       return AlertMessage('Error','Enter Your PUBG ID','red')
@@ -61,7 +60,7 @@ class MyWallet extends Component {
       
     }
     if(this.props.uc<this.state.ucs){
-      return AlertMessage('Error','You have less UC than '+this.state.ucs,'red')
+      return AlertMessage('Sorry!','You have less UC than '+this.state.ucs,'red')
     }
     Alert.alert(
       "Confirm Your PUBG ID",
@@ -130,7 +129,7 @@ class MyWallet extends Component {
             <Text style={{fontWeight:'bold',fontSize:hp('2.0%'),color:'white'}}> X {this.props.uc}</Text>
           </View>
           <Text style={{color:'white'}}>Minimum Redeem = 60UC</Text>
-          <Text style={{color:'white'}}>1000 coins = 1UC</Text>
+          <Text style={{color:'white'}}>2000 coins = 1UC</Text>
           <Text style={{color:'white'}}>50th redeem = UC+UC</Text>
         </View>
         <View style={styles.inputView} >
@@ -177,7 +176,6 @@ class MyWallet extends Component {
     );
   }
 }
-const resizeMode = 'center';
 const styles = StyleSheet.create({
   container: {
     flex: 1,

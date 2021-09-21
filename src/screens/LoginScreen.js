@@ -34,7 +34,7 @@ import {AlertMessage} from '../components/Alert'
       }
       let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
       if (reg.test(this.state.email) === false) {
-        return AertMessage("Email is Not Correct");
+        return AertMessage('Error',"Email is Not Correct",'red');
       }
       this.setState({Loadingvisible:true})
       axios({
@@ -56,11 +56,14 @@ import {AlertMessage} from '../components/Alert'
             this.props.goldenLimit(response.user.golden_limit)
             this.props.platinumLimit(response.user.platinum_limit)
             this.setState({ Loadingvisible: false });
+            // if(response.user.app_intro==0){
+            //   return this.props.navigation.replace('Appintro');
+            // }
             return this.props.navigation.replace('Home')
           }
           else{
             this.setState({ Loadingvisible: false });
-            return AlertMessage('Connection Failed','Check Your Internet','red')
+            return AlertMessage('Login Failed','Check Your email or password!','red')
             
           }
         })

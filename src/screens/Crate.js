@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { View ,Text,Modal,StyleSheet,Pressable,Image,ImageBackground,Dimensions,Alert, TouchableOpacity} from 'react-native';
+import { View ,Text,Modal,StyleSheet,Pressable,Image,Dimensions,Alert, TouchableOpacity} from 'react-native';
 import Header from '../components/header';
 import url from '../components/url'
 import axios from 'axios'
@@ -9,10 +9,10 @@ import Loader from '../components/Loader'
 import AsyncStorage from '@react-native-community/async-storage';
 import * as Animatable from 'react-native-animatable';
 import {AlertMessage} from '../components/Alert'
+import NetInfo from "@react-native-community/netinfo";
 import {
   AdMobBanner,
   AdMobInterstitial,
-  PublisherBanner,
   AdMobRewarded,
 } from 'react-native-admob-alpha'
 import Ad from '../components/Ad'
@@ -39,10 +39,15 @@ class Crate extends Component {
         AdMobInterstitial.requestAd();
       });
     }
+    isNetworkAvailable=async ()=> {
+      const response = await NetInfo.fetch();
+      return response.isConnected;
+  }
     reward_ad=()=>{
       
       AdMobRewarded.showAd()
       AdMobRewarded.addEventListener("adClosed", () => {
+        
       });
       this.limit();
     }
@@ -58,7 +63,7 @@ class Crate extends Component {
       })
       .then(async({ data: response }) => {
         if(response.message=='failure'){
-            AlertMessage('Token Expired','Your Token Expired. Login again Please!')
+            AlertMessage('Token Expired','Your Token Expired. Login again Please!','red')
             await AsyncStorage.setItem('user','');
             await AsyncStorage.setItem('fcmtoken','');
             this.props.navigation.replace('Login')
@@ -70,25 +75,27 @@ class Crate extends Component {
           }
           else{
             this.setState({ isVisible: false });
-            return AlertMessage('Connection Failed','Check Your Internet')
+            return AlertMessage('Connection Failed','Check Your Internet','red')
           }
         })
         .catch(function (response) {
           this.setState({ isVisible: false });
-          return AlertMessage('Connection Failed','Check Your Internet')
+          return AlertMessage('Connection Failed','Check Your Internet','red')
         });
         this.componentDidMount();
     }
-      modelOpen = () => {
+      modelOpen = async() => {
         
-        this.setState(
-          {
-            isVisible:true,
-          }
-        );
+        let net=await this.isNetworkAvailable()
+        if(net){
+          this.setState({isVisible:true})
+        }
+        else{
+          return AlertMessage('Connection Failed','Check Your Internet','red')
+        }
         var scratch_url=this.props.route.params.title=='Supply Crate'?'silver_coins':this.props.route.params.title=='Classic Crate'?'golden_coins':'platinum_coins'
         var newCoins=parseInt(this.props.coins) + parseInt(this.state.coins);
-        var newUC=newCoins/1000;
+        var newUC=newCoins/2000;
         axios({
           method: "POST",
           url: url + scratch_url,
@@ -101,7 +108,7 @@ class Crate extends Component {
         })
           .then(async({ data: response }) => {
             if(response.message=='failure'){
-                AlertMessage('Token Expired','Your Token Expired. Login again Please!')
+                AlertMessage('Token Expired','Your Token Expired. Login again Please!','red')
                 await AsyncStorage.setItem('user','');
                 await AsyncStorage.setItem('fcmtoken','');
                 this.props.navigation.replace('Login')
@@ -109,10 +116,12 @@ class Crate extends Component {
             }
             if(response.message=='success'){
               let adss=this.props.ads-1
-              if((this.state.limit-1)==1 || (this.state.limit-1)==0){
-                AdMobRewarded.setAdUnitID(Ad.reward_id);
-                AdMobRewarded.requestAd();
-              }
+              console.log(adss)
+              this.setState(
+                {
+                  limit:response.limit
+                },
+              );
               if(adss==0){
                 this.interstitial_ad();
                 this.props.getads(3)
@@ -123,22 +132,16 @@ class Crate extends Component {
               this.props.getcoins(response.coins)
               this.props.getuc(response.uc)
               this.props.route.params.title=='Supply Crate'?this.props.getsilverlimit(response.limit):this.props.route.params.title=='Classic Crate'?this.props.getgoldenlimit(response.limit):this.props.getplatinumlimit(response.limit)
-              this.setState(
-                {
-                  coins:silverNumbers[Math.floor(Math.random()*silverNumbers.length)],
-                  isVisible:false,
-                  limit:response.limit
-                },
-              );
+              
             }
             else{
               this.setState({ isVisible: false });
-              return AlertMessage('Connection Failed','Check Your Internet')
+              return AlertMessage('Connection Failed','Check Your Internet','red')
             }
           })
           .catch(function (response) {
-            // this.setState({ isVisible: false });
-            return AlertMessage('Connection Failed','Check Your Internet')
+            this.setState({ isVisible: false });
+            return AlertMessage('Connection Failed','Check Your Internet','red')
           });
       }
       componentDidMount=()=>{
@@ -170,7 +173,7 @@ class Crate extends Component {
     render() {
         return (
           <View style={{flex:1,backgroundColor:'black'}}>
-            <Header title={this.props.route.params.title} route={this.props.route.name} navigation={this.props.navigation}/>
+            <Header title={this.props.route.params.title} route="Crate" navigation={this.props.navigation}/>
             <Loader visible={this.state.Loadingvisible} />
             <View style={{flex:.92,alignItems:'center',}}>
                 <View style={{flex:.1,justifyContent:'center',alignItems:'center'}}>
@@ -210,7 +213,7 @@ class Crate extends Component {
                     transparent={true}
                     visible={this.state.isVisible}
                     onRequestClose={() => {
-                        Alert.alert("Confirm the Modal.");
+                        Alert.alert("Collect It First!.");
                     }}
                     >
                     <View style={styles.centeredView}>
@@ -220,12 +223,12 @@ class Crate extends Component {
                             <Image source={require('../assets/coin.png')}  style={{width:30,height:30}}/>
                             <Text style={styles.modalText}>x {this.state.coins}</Text>
                           </View>
-                        {/* <Pressable
+                        <Pressable
                             style={[styles.button, styles.buttonClose]}
                             onPress={() => this.reset()}
                         >
                             <Text style={styles.textStyle}>Collect</Text>
-                        </Pressable> */}
+                        </Pressable>
                         </View>
                     </View>
                 </Modal>

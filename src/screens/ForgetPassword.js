@@ -13,6 +13,7 @@ import {
 import Loader from '../components/Loader'
 import url from '../components/url'
 import axios from 'axios';
+import {AlertMessage} from '../components/Alert'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 export default class Home extends Component {
 
@@ -28,7 +29,7 @@ export default class Home extends Component {
       let user = await AsyncStorage.getItem('user')
       user = JSON.parse(user);
       if(this.state.email==''){
-        return alert('Enter Your Password')
+        return AlertMessage('Error','Please Enter your email!','red')
       }
       this.setState({Loadingvisible:true})
       axios({
@@ -41,17 +42,17 @@ export default class Home extends Component {
         .then(async({ data: response }) => {
           
           if(response.message=='success'){
-            alert(response.data)
+            AlertMessage('Success',response.data,'#4B937A')
             this.setState({ Loadingvisible: false,password:'' });
           }
           else{
             this.setState({ Loadingvisible: false });
-            alert('Something Wrong!')
+            AlertMessage('Unknown User',response.data,'red')
           }
         })
         .catch(function (response) {
           //handle error
-          alert(response)
+          AlertMessage('Connection Failed','Check Your Internet','red')
         });
     }
     if(event=='signup'){

@@ -33,10 +33,10 @@ export default class Home extends Component {
       let user = await AsyncStorage.getItem('user')
       user = JSON.parse(user);
       if(this.state.password==''){
-        return AlertMessage('Error','Please Enter New Password!')
+        return AlertMessage('Error','Please Enter New Password!','red')
       }
       if(this.state.old_password==''){
-        return AlertMessage('Error','Please Enter Old Password!')
+        return AlertMessage('Error','Please Enter Old Password!','red')
       }
       this.setState({Loadingvisible:true})
       axios({
@@ -76,7 +76,7 @@ export default class Home extends Component {
     return (
       
       <View style={styles.container}>
-        <Header navigation={this.props.navigation} route={this.props.route.name}/>
+        <Header navigation={this.props.navigation} route="Clickuc"/>
         <Loader visible={this.state.Loadingvisible} />
         <View style={styles.body}>
         <Text style={styles.logo}>Change Password</Text>

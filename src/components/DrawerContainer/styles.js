@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-
+import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 const styles = StyleSheet.create({
   content: {
     flex: 1,
@@ -31,12 +31,12 @@ const styles = StyleSheet.create({
   },
   profileNumber:{
     color:'white',
-    fontSize:10,
+    fontSize:hp('3%'),
     paddingLeft:20
   },
   profileImage:{
-    width:"70%",
-    height:"35%",
+    width:90,
+    height:90,
     alignSelf:'center',
     borderRadius:50
   }

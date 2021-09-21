@@ -36,7 +36,6 @@ export default class Home extends Component {
   
     let user = await AsyncStorage.getItem('user');
         user = JSON.parse(user);
-        console.log(user)
     let fcmtoken = await AsyncStorage.getItem('fcmtoken');
       axios({
         method: "POST",
@@ -81,7 +80,7 @@ export default class Home extends Component {
     const { animationState } = this.state;
     return (
       <View style={styles.container}>
-        <Header navigation={this.props.navigation} route={this.props.route.name}/>
+        <Header navigation={this.props.navigation} route="Clickuc"/>
         <View style={styles.body}>
           <FlatList style={styles.list}
             contentContainerStyle={styles.listContainer}

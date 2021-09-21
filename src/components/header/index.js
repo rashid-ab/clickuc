@@ -31,11 +31,10 @@ class Header extends Component {
     return (
         <View style={styles.header}>
           <View style={styles.header_body}>
-            
-            <TouchableOpacity onPress={()=>this.props.route=='Crate'?this.props.navigation.goBack():this.openDrawer()}>
+            <TouchableOpacity style={{flex:.2}} onPress={()=>this.props.route=='Crate'?this.props.navigation.goBack():this.openDrawer()}>
               <Image source={this.state.image_path} style={{width:wp('8%'),height:hp('3%')}}/>
             </TouchableOpacity>
-            <Text style={{color:'#4B937A',fontSize:hp('3%'),fontWeight:'bold'}}>{this.props.route}</Text>
+            <Text style={{color:'#4B937A',fontSize:hp('3%'),flex:.6,fontWeight:'bold'}}>{this.props.route=='Crate'?'Clickuc':this.props.route}</Text>
             <View style={styles.coinsView}>
               <View style={styles.coins}>
                 <Image source={require('../../assets/coin.png')} style={{width:wp('5%'),height:hp('3%')}}/>
@@ -60,7 +59,7 @@ const styles = StyleSheet.create({
   header_body:{
     flexDirection:'row',
     alignItems:'center',
-    justifyContent:'space-between'
+    // justifyContent:'space-between'
   },
   coinsView:{
     backgroundColor:'#4B937A',
@@ -68,6 +67,7 @@ const styles = StyleSheet.create({
     padding:6,
     borderBottomLeftRadius:20,
     borderTopRightRadius:20,
+    flex:.2
   },
   coins:{
     // backgroundColor:'#fff',

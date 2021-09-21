@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Image, Text,ScrollView} from 'react-native';
+import {View, Image, Text,Alert} from 'react-native';
 import styles from './styles';
 import PropTypes from 'prop-types';
 import MenuButton from './MenuButton/MenuButton';
@@ -12,6 +12,28 @@ class DrawerContainer extends React.Component {
     navigation.replace('Login');
     
   }
+  logout=async () =>{
+    Alert.alert(
+      "Logout",
+      "Are you sure to logout?",
+      [
+        {
+          text: "No",
+          onPress: () => {},
+          style: "cancel"
+        },
+        { text: "Yes", onPress:async () => {
+          await AsyncStorage.setItem('user','');
+          await AsyncStorage.setItem('fcmtoken','');
+          this.props.navigation.closeDrawer();
+          this.props.users('');
+          this.props.navigation.replace('Login');
+          
+        } }
+      ]
+    );
+  }
+
   render() {
     const {navigation} = this.props;
     return (
@@ -21,13 +43,12 @@ class DrawerContainer extends React.Component {
             style={{alignItem: 'center', justifyContent: 'center', flex: 0.3}}>
             <Image
               style={styles.profileImage}
-              source={require('../../assets/profile.jpeg')}
+              source={require('../../assets/app_icon.png')}
             />
           </View>
           <View
             style={{alignItem: 'center', justifyContent: 'center', flex: 0.7}}>
-            <Text style={styles.profileName}>{this.props.user.name}</Text>
-            <Text style={styles.profileNumber}>{this.props.user.email}</Text>
+            <Text style={styles.profileNumber}>ClickUC</Text>
           </View>
         </View>
         <View style={styles.container}>
@@ -58,15 +79,7 @@ class DrawerContainer extends React.Component {
           <MenuButton
             title="Logout"
             source={require('../../assets/logout.png')}
-            onPress={
-                async () => {
-                await AsyncStorage.setItem('user','');
-                await AsyncStorage.setItem('fcmtoken','');
-                navigation.closeDrawer();
-                navigation.replace('Login');
-                this.props.users('');
-              
-            }}
+            onPress={() => this.logout()}
           />
         </View>
       </View>

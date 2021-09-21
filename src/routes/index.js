@@ -5,6 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import DrawerComponent from '../components/DrawerContainer/index'
 import Auth from "../screens/Auth";
+import Appintro from "../screens/Appintro";
 import Signin from "../screens/LoginScreen";
 import Signup from "../screens/SignupScreen";
 import ForgetPassword from "../screens/ForgetPassword";
@@ -60,6 +61,7 @@ const Drawer = createDrawerNavigator();
             headerTintColor:'white'
             }}>
           <Stack.Screen name="Auth" component={Auth} />
+          <Stack.Screen name="Appintro" component={Appintro} />
           <Stack.Screen name="Login" component={Signin} />
           <Stack.Screen name="SignUp" component={Signup} />
           <Stack.Screen name="ForgetPassword" component={ForgetPassword} />

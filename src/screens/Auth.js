@@ -32,7 +32,8 @@ class Auth extends Component {
       })
       .then(async({ data: response }) => {
         if(response.message=='failure'){
-            alert('Your Token is expire. Please login again')
+          
+            AlertMessage('Token Expired','Your Token Expired. Login again Please!','red')
             await AsyncStorage.setItem('user','');
             await AsyncStorage.setItem('fcmtoken','');
           this.props.navigation.replace('Login')
@@ -49,6 +50,7 @@ class Auth extends Component {
             this.props.getgoldenlimit(response.data.golden_limit)
             this.props.getplatinumlimit(response.data.platinum_limit)
             await AsyncStorage.setItem('user',JSON.stringify(response.data))
+            
             this.props.navigation.replace('Home');
           }
           else{
@@ -56,7 +58,7 @@ class Auth extends Component {
           }
         })
         .catch(async function (response) {
-          return AlertMessage('Error','Check Your Internet','red')
+          return AlertMessage('Connection Failed','Check Your Internet','red')
         });
     }
         
