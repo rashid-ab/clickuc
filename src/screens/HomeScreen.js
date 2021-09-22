@@ -80,7 +80,7 @@ export default class Home extends Component {
     const { animationState } = this.state;
     return (
       <View style={styles.container}>
-        <Header navigation={this.props.navigation} route="Clickuc"/>
+        <Header navigation={this.props.navigation} route="Click UC"/>
         <View style={styles.body}>
           <FlatList style={styles.list}
             contentContainerStyle={styles.listContainer}
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   
   cardImage:{
     height: hp('22%'),
-    width: wp('35%'),
+    width: wp('45%'),
     alignSelf:'center',justifyContent:'center'
   },
   title:{

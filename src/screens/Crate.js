@@ -167,8 +167,12 @@ class Crate extends Component {
           {
             coins:silverNumbers[Math.floor(Math.random()*silverNumbers.length)],
             isVisible:false,
+            Loadingvisible:true,
           },
         );
+        setInterval(() => {
+          this.setState({Loadingvisible:false})
+        }, 1000);
       };
     render() {
         return (
@@ -191,7 +195,7 @@ class Crate extends Component {
                     <View style={{width:wp('60%'),height:hp('35%'),borderRadius:20,justifyContent:'center',alignItems:'center',backgroundColor:'white',borderBottomLeftRadius:70,borderTopRightRadius:70}}>
                         <View style={{ width: wp('50%'), height: hp('25%'),borderRadius:20 }}>
                             <View style={{ width: wp('50%'), height: hp('25%'),borderRadius:30,alignItems:'center',justifyContent:'center' }}>
-                                <Image source={this.state.image} style={{width:wp('40%'),height:hp('27%')}} />
+                                <Image source={this.state.image} style={{width:wp('50%'),height:hp('27%')}} />
                                 <Text style={{color:'#4B937A',fontSize:hp('4%'),shadowColor: '#474747',fontWeight:'bold',shadowOffset: {width: 0,height: 6,},shadowOpacity: 0.37,shadowRadius: 7.49,elevation: 12,}}>Open</Text>
                             </View>
                         </View>
@@ -218,7 +222,7 @@ class Crate extends Component {
                     >
                     <View style={styles.centeredView}>
                         <View style={styles.modalView}>
-                          <Image source={this.state.image}  style={{width:wp('40%'),height:hp('27%')}}/>
+                          <Image source={this.state.image}  style={{width:wp('50%'),height:hp('27%')}}/>
                           <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',marginVertical:20}}>
                             <Image source={require('../assets/coin.png')}  style={{width:30,height:30}}/>
                             <Text style={styles.modalText}>x {this.state.coins}</Text>

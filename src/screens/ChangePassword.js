@@ -76,7 +76,7 @@ export default class Home extends Component {
     return (
       
       <View style={styles.container}>
-        <Header navigation={this.props.navigation} route="Clickuc"/>
+        <Header navigation={this.props.navigation} route="Click UC"/>
         <Loader visible={this.state.Loadingvisible} />
         <View style={styles.body}>
         <Text style={styles.logo}>Change Password</Text>
