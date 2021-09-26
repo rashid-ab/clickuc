@@ -84,13 +84,13 @@ login=()=>{
               this.login()
           }
           else{
-            this.setState({ Loadingvisible: false });
-              return AlertMessage('Connection Failed','Check Your Internet','red')
+              this.setState({ Loadingvisible: false });
+              return AlertMessage('Invalid',response.message,'red')
           }
         })
         .catch(function (response) {
             this.setState({ Loadingvisible: false });
-              return AlertMessage('Connection Failed','Check Your Internet','red')
+            return AlertMessage('Connection Failed','Check Your Internet','red')
         });
     }
         if(event=='login'){
