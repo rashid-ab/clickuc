@@ -22,12 +22,10 @@ export default class Home extends Component {
     super(props);
     this.state = {
       data: [
-        // {id:1, title: "Daily Checkin", image:"https://img.icons8.com/color/70/000000/cottage.png"},
         {id:2, title: "Supply Crate", },
         {id:3, title: "Classic Crate", } ,
         {id:4, title: "Premium Crate", } ,
         {id:5, title: "My Wallet", } ,
-        // {id:5, title: "Referal Code", image:"https://img.icons8.com/color/70/000000/shutdown.png"} ,
       ],
       animationState: 'rest',
     };
