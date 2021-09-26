@@ -11,6 +11,7 @@ import axios from "axios";
 import AsyncStorage from '@react-native-community/async-storage'
 import { connect } from 'react-redux';
 import Loader from '../components/Loader'
+import {AlertMessage} from '../components/Alert'
 class SignUp extends Component {
 
   constructor(props) {
@@ -42,27 +43,30 @@ login=()=>{
         this.props.goldenLimit(response.user.golden_limit)
         this.props.platinumLimit(response.user.platinum_limit)
         this.setState({ Loadingvisible: false });
-        return this.props.navigation.replace('Home')
+        if(response.user.app_intro==0){
+          return this.props.navigation.replace('Appintro');
+        }
+          return this.props.navigation.replace('Home')
       }
       else{
-        this.setState({ Loadingvisible: false });
-        return alert(response.message)
+          this.setState({ Loadingvisible: false });
+          return AlertMessage('Error',response.message,'red')
       }
     })
     .catch(function (response) {
-      return alert('May be Your Internet Lost!')
+          return AlertMessage('May be Your Internet Lost!')
     });
 }
   onClickListener = (event) => {
     if(event=='signup'){
       if(this.state.name==''){
-        return alert('Enter Your Name')
+          return AlertMessage('Error','Enter Your Name','red')
       }
       if(this.state.email==''){
-        return alert('Enter Your Email')
+          return AlertMessage('Error','Enter Your Email','red')
       }
       if(this.state.password==''){
-        return alert('Enter Your Password')
+          return AlertMessage('Error','Enter Your Password','red')
       }
       this.setState({Loadingvisible:true})
       axios({
@@ -73,27 +77,25 @@ login=()=>{
           name: this.state.name,
           email: this.state.email,
           password: this.state.password,
-          
         }
       })
         .then(({ data: response }) => {
-          
           if(response.message=='success'){
-            this.login()
+              this.login()
           }
           else{
             this.setState({ Loadingvisible: false });
-            return alert(response.message)
+              return AlertMessage('Connection Failed','Check Your Internet','red')
           }
         })
         .catch(function (response) {
-          this.setState({ Loadingvisible: false });
-          alert('May be Your Internet Lost!')
+            this.setState({ Loadingvisible: false });
+              return AlertMessage('Connection Failed','Check Your Internet','red')
         });
     }
-    if(event=='login'){
-    this.props.navigation.navigate('Login')
-    }
+        if(event=='login'){
+            this.props.navigation.navigate('Login')
+        }
   }
 
   render(){

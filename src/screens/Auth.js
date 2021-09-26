@@ -50,8 +50,12 @@ class Auth extends Component {
             this.props.getgoldenlimit(response.data.golden_limit)
             this.props.getplatinumlimit(response.data.platinum_limit)
             await AsyncStorage.setItem('user',JSON.stringify(response.data))
-            
-            this.props.navigation.replace('Home');
+            if(response.data.app_intro==0){
+              this.props.navigation.replace('Appintro');
+            }
+            else{
+              this.props.navigation.replace('Home');
+            }
           }
           else{
             this.props.navigation.replace('Login');

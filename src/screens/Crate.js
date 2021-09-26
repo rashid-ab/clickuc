@@ -19,8 +19,8 @@ import Ad from '../components/Ad'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 const screeWidth = Dimensions.get('window').width
 const silverNumbers=[8,9,10,11,12,13,14,15,16,17,18,19,20]
-const goldenNumbers=[10,16,17,18,19,20,21,22,23,24,24,25,26,27,28,29,30,31,32,33,1,34,35,36,37,38,39,40]
-const platinumNumbers=[15,19,20,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50]
+const goldenNumbers=[10,16,17,18,19,20,21,22,23,24,24,25,26,27,28,29,30]
+const platinumNumbers=[15,19,20,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40]
 class Crate extends Component {
     constructor(props) {
         super(props);

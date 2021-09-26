@@ -1,15 +1,35 @@
 import React,{useState,useEffect,useRef} from 'react';
 import { store } from './src/redux/index'
 import { Provider } from 'react-redux'
-import {
-  Text,
-} from 'react-native';
+import {BackHandler,Alert,Linking} from 'react-native';
 import Navigation from './src/routes/index';
 import FlashMessage from "react-native-flash-message";
  import {requestUserPermission,notificationListner} from './src/components/Utils'
-
-function App() {
- useEffect(() => {
+ import { checkVersion } from "react-native-check-version";
+ 
+ function App() {
+ useEffect(async() => {
+  const version = await checkVersion();
+  if (version.needsUpdate) {
+    Alert.alert(
+      'Please Update',
+      'You will have to update your app to the latest version to continue using.'
+      [
+        {
+          text: "No",
+          onPress: () => {
+            BackHandler.exitApp();
+          },
+          style: "cancel"
+        },
+        { text: "Update", onPress:async () => {
+          BackHandler.exitApp();
+          Linking.openURL(version.url)
+          
+        } }
+      ]
+    );
+}
    requestUserPermission();
    notificationListner();
 }, []);
