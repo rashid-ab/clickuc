@@ -16,11 +16,13 @@ import {AlertMessage} from '../components/Alert'
 import {
   AdMobBanner,
 } from 'react-native-admob-alpha'
+import { BannerView } from 'react-native-fbads';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      ads:'google',
       data: [
         {id:2, title: "Supply Crate", },
         {id:3, title: "Classic Crate", } ,
@@ -112,12 +114,20 @@ export default class Home extends Component {
               )
             }}/>
           </View>
+          {this.state.ads=='google'?
           <AdMobBanner
           adSize="fullBanner"
           adUnitID={Ad.banner_id}
           testDevices={[AdMobBanner.simulatorId]}
-          onAdFailedToLoad={error => console.error(error)}
-        />
+          onAdFailedToLoad={error => this.setState({ads:'facebook'})}
+          />:
+        <BannerView
+        placementId="IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"
+        type="standard"
+        onPress={() => console.log('click')}
+        onLoad={() => console.log('loaded')}
+        onError={(err) => this.setState({ads:'google'})}
+      />}
       </View>
     );
   }

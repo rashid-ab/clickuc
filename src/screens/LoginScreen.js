@@ -27,14 +27,14 @@ import {AlertMessage} from '../components/Alert'
   onClickListener = (event) => {
     if(event=='login'){
       if(this.state.email==''){
-        return AertMessage('Error','Enter Your Email','red')
+        return AlertMessage('Error','Enter Your Email','red')
       }
       if(this.state.password==''){
-        return AertMessage('Error','Enter Your Password','red')
+        return AlertMessage('Error','Enter Your Password','red')
       }
       let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
       if (reg.test(this.state.email) === false) {
-        return AertMessage('Error',"Email is Not Correct",'red');
+        return AlertMessage('Error',"Email is Not Correct",'red');
       }
       this.setState({Loadingvisible:true})
       axios({

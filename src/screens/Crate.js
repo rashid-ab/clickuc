@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as Animatable from 'react-native-animatable';
 import {AlertMessage} from '../components/Alert'
 import NetInfo from "@react-native-community/netinfo";
+import { InterstitialAdManager } from 'react-native-fbads';
 import {
   AdMobBanner,
   AdMobInterstitial,
@@ -29,15 +30,22 @@ class Crate extends Component {
           coins:this.props.route.params.title=='Supply Crate'?silverNumbers[Math.floor(Math.random()*silverNumbers.length)]:this.props.route.params.title=='Classic Crate'?goldenNumbers[Math.floor(Math.random()*goldenNumbers.length)]:platinumNumbers[Math.floor(Math.random()*platinumNumbers.length)],
           limit:this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit,
           image:this.props.route.params.title=='Supply Crate'?require('../assets/supply.png'):this.props.route.params.title=='Classic Crate'?require('../assets/classics.png'):require('../assets/premium.png'),
-          Loadingvisible:true
+          Loadingvisible:true,
+          ads:''
         };
     }
     
     interstitial_ad=()=>{
-      AdMobInterstitial.showAd()
-      AdMobInterstitial.addEventListener("adClosed", () => {
-        AdMobInterstitial.requestAd();
-      });
+      if(this.state.ads=="google"){
+        AdMobInterstitial.showAd()
+        AdMobInterstitial.addEventListener("adClosed", () => {
+          this.adloading();
+        });
+      }
+      else{
+          InterstitialAdManager.showPreloadedAd("IMG_16_9_APP_INSTALL#2029572424039676_2029575330706052");
+          this.adloading();
+      }
     }
     isNetworkAvailable=async ()=> {
       const response = await NetInfo.fetch();
@@ -112,7 +120,6 @@ class Crate extends Component {
                 await AsyncStorage.setItem('user','');
                 await AsyncStorage.setItem('fcmtoken','');
                 this.props.navigation.replace('Login')
-
             }
             if(response.message=='success'){
               let adss=this.props.ads-1
@@ -144,21 +151,35 @@ class Crate extends Component {
             return AlertMessage('Connection Failed','Check Your Internet','red')
           });
       }
+      adloading=()=>{
+        if(this.state.limit>0){
+          AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
+          AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+          AdMobInterstitial.requestAd().then(()=>{
+              this.setState({ads:'google'})
+              console.log('google')
+          }).catch(()=>{
+            this.setState({ads:''})
+            InterstitialAdManager.preloadAd("IMG_16_9_APP_INSTALL#2029572424039676_2029575330706052")
+            .then((didClick) => {})
+            .catch((error) => { 
+              console.log('facebook')
+              this.adloading();
+              });
+          });
+        }
+        else{
+          AdMobRewarded.setAdUnitID(Ad.reward_id);
+          AdMobRewarded.requestAd();
+        }
+      }
       componentDidMount=()=>{
         this.focusListener = this.props.navigation.addListener("focus", () => {
           this.setState({
             coins:this.props.route.params.title=='Supply Crate'?silverNumbers[Math.floor(Math.random()*silverNumbers.length)]:this.props.route.params.title=='Classic Crate'?goldenNumbers[Math.floor(Math.random()*goldenNumbers.length)]:platinumNumbers[Math.floor(Math.random()*platinumNumbers.length)],
             limit:this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit
           })
-          if(this.state.limit>0){
-        AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
-        AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
-        AdMobInterstitial.requestAd();
-      }
-      else{
-        AdMobRewarded.setAdUnitID(Ad.reward_id);
-        AdMobRewarded.requestAd();
-      }
+          this.adloading();
       setTimeout(()=>{this.setState({Loadingvisible: false})}, 3000)
         })
       }
