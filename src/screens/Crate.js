@@ -34,23 +34,65 @@ class Crate extends Component {
           ads:''
         };
     }
-    
-    interstitial_ad=()=>{
-      if(this.state.ads=="google"){
+    adloading=()=>{
+      AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
+      AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+      AdMobInterstitial.requestAd();
+      AdMobInterstitial.addEventListener('adLoaded',async () => {
+          await AsyncStorage.setItem('ads','google');
+          console.log('google1')})
+        AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
+          await AsyncStorage.setItem('ads','');
+        })
+    }
+    componentDidMount=()=>{
+      // this.focusListener = this.props.navigation.addListener("focus", () => {
+        this.setState({
+          coins:this.props.route.params.title=='Supply Crate'?silverNumbers[Math.floor(Math.random()*silverNumbers.length)]:this.props.route.params.title=='Classic Crate'?goldenNumbers[Math.floor(Math.random()*goldenNumbers.length)]:platinumNumbers[Math.floor(Math.random()*platinumNumbers.length)],
+          limit:this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit
+        })
+        if(this.state.limit>0){
+          AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
+          AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+          AdMobInterstitial.requestAd()
+          AdMobInterstitial.addEventListener('adLoaded',async () => {
+            await AsyncStorage.setItem('ads','google');
+            console.log('google2')})
+          AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
+            await AsyncStorage.setItem('ads','');
+          })
+          
+          
+        }
+        else{
+          AdMobRewarded.setAdUnitID(Ad.reward_id);
+          AdMobRewarded.requestAd();
+        }
+    setTimeout(()=>{this.setState({Loadingvisible: false})}, 3000)
+      // })
+    }
+    interstitial_ad=async()=>{
+      let ads=await AsyncStorage.getItem('ads','');
+      if(ads=="google"){
+        console.log('show')
         AdMobInterstitial.showAd()
-        AdMobInterstitial.addEventListener("adClosed", () => {
+        AdMobInterstitial.addEventListener("adClosed",async () => {
+          await AsyncStorage.setItem('ads','');
           this.adloading();
         });
       }
       else{
-          InterstitialAdManager.showPreloadedAd("IMG_16_9_APP_INSTALL#2029572424039676_2029575330706052");
+        InterstitialAdManager.showAd("IMG_16_9_APP_INSTALL#2029572424039676_2029575330706052")
+        .then((didClick) => {})
+        .catch((error) => {});
           this.adloading();
       }
+      
     }
     isNetworkAvailable=async ()=> {
       const response = await NetInfo.fetch();
       return response.isConnected;
-  }
+    }
     reward_ad=()=>{
       
       AdMobRewarded.showAd()
@@ -151,48 +193,17 @@ class Crate extends Component {
             return AlertMessage('Connection Failed','Check Your Internet','red')
           });
       }
-      adloading=()=>{
-        if(this.state.limit>0){
-          AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
-          AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
-          AdMobInterstitial.requestAd().then(()=>{
-              this.setState({ads:'google'})
-              console.log('google')
-          }).catch(()=>{
-            this.setState({ads:''})
-            InterstitialAdManager.preloadAd("IMG_16_9_APP_INSTALL#2029572424039676_2029575330706052")
-            .then((didClick) => {})
-            .catch((error) => { 
-              console.log('facebook')
-              this.adloading();
-              });
-          });
-        }
-        else{
-          AdMobRewarded.setAdUnitID(Ad.reward_id);
-          AdMobRewarded.requestAd();
-        }
-      }
-      componentDidMount=()=>{
-        this.focusListener = this.props.navigation.addListener("focus", () => {
-          this.setState({
-            coins:this.props.route.params.title=='Supply Crate'?silverNumbers[Math.floor(Math.random()*silverNumbers.length)]:this.props.route.params.title=='Classic Crate'?goldenNumbers[Math.floor(Math.random()*goldenNumbers.length)]:platinumNumbers[Math.floor(Math.random()*platinumNumbers.length)],
-            limit:this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit
-          })
-          this.adloading();
-      setTimeout(()=>{this.setState({Loadingvisible: false})}, 3000)
-        })
-      }
-      reset = () => {
-        this.setState(
+      
+      reset =async () => {
+        await this.setState(
           {
             coins:silverNumbers[Math.floor(Math.random()*silverNumbers.length)],
             isVisible:false,
             Loadingvisible:true,
           },
         );
-        setInterval(() => {
-          this.setState({Loadingvisible:false})
+        setTimeout(async() => {
+          await  this.setState({Loadingvisible:false})
         }, 1000);
       };
     render() {
@@ -228,7 +239,7 @@ class Crate extends Component {
                     <View style={{width:wp('60%'),height:hp('30%'),borderRadius:20,justifyContent:'center',alignItems:'center',backgroundColor:'white',shadowColor: '#474747',shadowOffset: {width: 0,height: 6,},shadowOpacity: 0.37,shadowRadius: 7.49,elevation: 12,}}>
                         <View style={{ width: wp('50%'), height: hp('25%'),borderRadius:20 }}>
                             <Animatable.View animation="pulse" easing="ease-in-out" iterationCount="infinite" style={{ width: wp('50%'), height: hp('25%'),borderRadius:30,alignItems:'center',justifyContent:'center',flexDirection:'row' }}>
-                                <Image source={require('../assets/supply.png')} style={{width:wp('31%'),height:hp('19%')}} />
+                                <Image source={require('../assets/playbutton.png')} style={{width:wp('31%'),height:hp('19%')}} />
                             </Animatable.View>
                         </View>
                     </View>

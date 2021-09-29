@@ -1,5 +1,6 @@
 import AsyncStorage from '@react-native-community/async-storage';
 import React, { Component } from 'react';
+import { AndroidBackHandler } from "react-navigation-backhandler";
 import {
   StyleSheet,
   Text,
@@ -7,6 +8,11 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  BackHandler,
+  Modal,
+  Dimensions,
+  Pressable,
+  Platform
 } from 'react-native';
 import Header from '../components/header';
 import url from '../components/url'
@@ -18,11 +24,17 @@ import {
 } from 'react-native-admob-alpha'
 import { BannerView } from 'react-native-fbads';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { NativeAdsManager } from 'react-native-fbads';
+import AdComponent from '../components/NativeAd'
+import Backhandler from '../components/BackHandler'
+const youWantToHandleTheBackButtonPress = true
+const adsManager = new NativeAdsManager('IMG_16_9_APP_INSTALL#2029572424039676_2029573867372865');
 export default class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
       ads:'google',
+      isVisible:false,
       data: [
         {id:2, title: "Supply Crate", },
         {id:3, title: "Classic Crate", } ,
@@ -33,7 +45,7 @@ export default class Home extends Component {
     };
   }
   componentDidMount = async() => {
-  
+    console.log(this.props.route)
     let user = await AsyncStorage.getItem('user');
         user = JSON.parse(user);
     let fcmtoken = await AsyncStorage.getItem('fcmtoken');
@@ -76,9 +88,18 @@ export default class Home extends Component {
   openDrawer = () => {
     this.props.navigation.toggleDrawer()
   }
+  
+  onBackButtonPressAndroid = () => {
+    if (youWantToHandleTheBackButtonPress) {
+      this.setState({isVisible:true})
+      return true;
+    }
+    return false;
+  };
   render() {
     const { animationState } = this.state;
     return (
+      <AndroidBackHandler onBackPress={this.onBackButtonPressAndroid}>
       <View style={styles.container}>
         <Header navigation={this.props.navigation} route="Click UC"/>
         <View style={styles.body}>
@@ -114,6 +135,30 @@ export default class Home extends Component {
               )
             }}/>
           </View>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.isVisible}
+            >
+
+            <View style={styles.centeredView}>
+              <View style={styles.modalView}>
+              <View >
+                <Text style={{color:'#2fabed',fontSize:18,paddingVertical:20,marginLeft:10}}>Exit App</Text>
+              </View>
+                <AdComponent adsManager={adsManager} adChoicePosition="bottomRight"/>
+                <View style={{flexDirection:'row',justifyContent:'flex-end'}}>               
+                  <TouchableOpacity onPress={()=>{BackHandler.exitApp()}}>
+                    <Text style={{color:'#2fabed',fontSize:18,padding:20,marginLeft:10}}>Yes</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={()=>{this.setState({isVisible:false})}}>
+                    <Text style={{color:'#2fabed',fontSize:18,padding:20,marginLeft:10}}>No</Text>
+                  </TouchableOpacity>
+                </View> 
+              </View>
+              
+            </View>
+        </Modal>
           {this.state.ads=='google'?
           <AdMobBanner
           adSize="fullBanner"
@@ -128,15 +173,68 @@ export default class Home extends Component {
         onLoad={() => console.log('loaded')}
         onError={(err) => this.setState({ads:'google'})}
       />}
+      {/* {this._renderBackHandler()} */}
       </View>
+      </AndroidBackHandler>
     );
   }
 }
-
+const screeWidth = Dimensions.get('window').width
 const styles = StyleSheet.create({
   container:{
     flex:1,
     backgroundColor:'black',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    // marginTop: 22
+    borderRadius: 10,
+    height:400,
+    marginHorizontal: 10,
+  },
+  modalView: {
+    marginHorizontal: 10,
+    borderRadius: 10,
+    width:400,
+    height:400,
+    backgroundColor: "white",
+    padding: 20,
+    shadowColor: "#000",
+    borderRadius: 10,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    width:screeWidth/2
+  },
+  buttonOpen: {
+    backgroundColor: "#4B937A",
+  },
+  buttonClose: {
+    backgroundColor: "#4B937A",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+    fontSize:18
+  },
+  modalText: {
+    // marginBottom: 15,
+    fontSize:18,
+    fontWeight:'bold',
+    textAlign: "center",
+    alignSelf:'center'
   },
   header:{
     flex:.08,

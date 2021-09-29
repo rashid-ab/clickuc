@@ -23,6 +23,7 @@ import { connect } from 'react-redux';
 import {AlertMessage} from '../components/Alert'
 import AsyncStorage from '@react-native-community/async-storage';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { BannerView } from 'react-native-fbads';
 const uc = [60,300,600];
 class MyWallet extends Component {
   
@@ -32,9 +33,11 @@ class MyWallet extends Component {
       id:'',
       ucs:'',
       Loadingvisible:false,
+      ads:'google'
     };
   }
   componentDidMount =async () => {
+    console.log(this.props.route)
     AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
     AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
     AdMobInterstitial.requestAd();
@@ -140,7 +143,7 @@ class MyWallet extends Component {
               placeholderTextColor="#d1d1d1"
               value={this.state.id}
               underlineColorAndroid='transparent'
-              onChangeText={(id) => this.setState({id})}/>
+              onChangeText={(id) => this.state.id.length<10 && this.setState({id})}/>
         </View>
         <View style={styles.inputView}>
         <SelectDropdown
@@ -165,12 +168,20 @@ class MyWallet extends Component {
           <Text style={styles.loginText}>Redeem</Text>
         </TouchableOpacity>
         </ScrollView>
-        <AdMobBanner
+        {this.state.ads=='google'?
+          <AdMobBanner
           adSize="fullBanner"
           adUnitID={Ad.banner_id}
           testDevices={[AdMobBanner.simulatorId]}
-          onAdFailedToLoad={error => console.error(error)}
-        />
+          onAdFailedToLoad={error => this.setState({ads:'facebook'})}
+          />:
+        <BannerView
+          placementId="IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"
+          type="standard"
+          onPress={() => console.log('click')}
+          onLoad={() => console.log('loaded')}
+          onError={(err) => this.setState({ads:'google'})}
+        />}
       </View>
       
     );

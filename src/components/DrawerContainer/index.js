@@ -43,12 +43,12 @@ class DrawerContainer extends React.Component {
             style={{alignItem: 'center', justifyContent: 'center', flex: 0.3}}>
             <Image
               style={styles.profileImage}
-              source={require('../../assets/app_icon.png')}
+              source={require('../../assets/app_iconss.png')}
             />
           </View>
           <View
             style={{alignItem: 'center', justifyContent: 'center', flex: 0.7}}>
-            <Text style={styles.profileNumber}>ClickUC</Text>
+            <Text style={styles.profileNumber}>Click UC</Text>
           </View>
         </View>
         <View style={styles.container}>

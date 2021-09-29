@@ -18,6 +18,7 @@ import Header from '../components/header';
 import url from '../components/url'
 import axios from 'axios';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
+import { BannerView } from 'react-native-fbads';
 export default class Home extends Component {
 
   constructor(props) {
@@ -25,7 +26,8 @@ export default class Home extends Component {
     this.state = {
       password: '',
       old_password: '',
-      Loadingvisible:false
+      Loadingvisible:false,
+      ads:'google'
     }
   }
   onClickListener =async (event) => {
@@ -100,12 +102,20 @@ export default class Home extends Component {
             <Text style={styles.loginText}>Send</Text>
           </TouchableOpacity>
         </View>
-          <AdMobBanner
+          {this.state.ads=='google'?
+            <AdMobBanner
             adSize="fullBanner"
             adUnitID={Ad.banner_id}
             testDevices={[AdMobBanner.simulatorId]}
-            onAdFailedToLoad={error => console.error(error)}
-          />
+            onAdFailedToLoad={error => this.setState({ads:'facebook'})}
+            />:
+          <BannerView
+            placementId="IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"
+            type="standard"
+            onPress={() => console.log('click')}
+            onLoad={() => console.log('loaded')}
+            onError={(err) => this.setState({ads:'google'})}
+          />}
       </View>
     );
   }

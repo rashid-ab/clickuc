@@ -6,6 +6,10 @@ import { connect } from 'react-redux';
 import url from '../components/url'
 import axios from 'axios'
 import {AlertMessage} from '../components/Alert'
+import {
+  AdMobInterstitial,
+} from 'react-native-admob-alpha'
+import Ad from '../components/Ad'
 // import VersionCheck from 'react-native-version-check';
 class Auth extends Component {
   constructor(props){
@@ -17,6 +21,16 @@ class Auth extends Component {
   componentDidMount =async () => {
      auth = await AsyncStorage.getItem('user')
      auth=JSON.parse(auth)
+     AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
+     AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+     AdMobInterstitial.addEventListener('adLoaded',async () => {
+      await AsyncStorage.setItem('ads','google');
+      console.log('Google')
+     })
+      AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
+        await AsyncStorage.setItem('ads','');
+      })
+     AdMobInterstitial.requestAd();
      if(auth==null){
         this.props.navigation.replace('Login');
      }
@@ -51,13 +65,16 @@ class Auth extends Component {
             this.props.getplatinumlimit(response.data.platinum_limit)
             await AsyncStorage.setItem('user',JSON.stringify(response.data))
             if(response.data.app_intro==0){
+              AdMobInterstitial.showAd()
               this.props.navigation.replace('Appintro');
             }
             else{
+              AdMobInterstitial.showAd()
               this.props.navigation.replace('Home');
             }
           }
           else{
+            AdMobInterstitial.showAd()
             this.props.navigation.replace('Login');
           }
         })
@@ -69,7 +86,7 @@ class Auth extends Component {
   }
   render() {
     return (
-      <ImageBackground resizeMode="cover" source={require('../assets/app_icon.png')} style={{flex:1}}>
+      <ImageBackground resizeMode="cover" source={require('../assets/app_iconss.png')} style={{flex:1}}>
         <Loader visible={this.state.Loadingvisible} />
       </ImageBackground>
     );

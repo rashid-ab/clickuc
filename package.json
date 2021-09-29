@@ -37,6 +37,7 @@
     "react-native-screens": "^3.6.0",
     "react-native-select-dropdown": "^1.1.0",
     "react-native-vector-icons": "^8.1.0",
+    "react-navigation-backhandler": "^2.0.1",
     "react-redux": "^7.2.5",
     "redux": "^4.1.1"
   },
