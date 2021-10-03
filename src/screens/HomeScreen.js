@@ -28,7 +28,7 @@ import { NativeAdsManager } from 'react-native-fbads';
 import AdComponent from '../components/NativeAd'
 import Backhandler from '../components/BackHandler'
 const youWantToHandleTheBackButtonPress = true
-const adsManager = new NativeAdsManager('IMG_16_9_APP_INSTALL#2029572424039676_2029573867372865');
+const adsManager = new NativeAdsManager('195566716011557_195566759344886');
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -45,7 +45,6 @@ export default class Home extends Component {
     };
   }
   componentDidMount = async() => {
-    console.log(this.props.route)
     let user = await AsyncStorage.getItem('user');
         user = JSON.parse(user);
     let fcmtoken = await AsyncStorage.getItem('fcmtoken');
@@ -167,7 +166,7 @@ export default class Home extends Component {
           onAdFailedToLoad={error => this.setState({ads:'facebook'})}
           />:
         <BannerView
-        placementId="IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"
+        placementId="195566716011557_195566766011552"
         type="standard"
         onPress={() => console.log('click')}
         onLoad={() => console.log('loaded')}

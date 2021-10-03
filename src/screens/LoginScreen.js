@@ -19,8 +19,8 @@ import {AlertMessage} from '../components/Alert'
   constructor(props) {
     super(props);
     this.state = {
-      email   : 'rashidbuttuog@gmail.com',
-      password: 'respecteduc', 
+      email   : '',
+      password: '', 
       Loadingvisible:false
     }
   }

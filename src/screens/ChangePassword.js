@@ -110,7 +110,7 @@ export default class Home extends Component {
             onAdFailedToLoad={error => this.setState({ads:'facebook'})}
             />:
           <BannerView
-            placementId="IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"
+            placementId="195566716011557_195566766011552"
             type="standard"
             onPress={() => console.log('click')}
             onLoad={() => console.log('loaded')}

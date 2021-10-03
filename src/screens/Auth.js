@@ -64,17 +64,39 @@ class Auth extends Component {
             this.props.getgoldenlimit(response.data.golden_limit)
             this.props.getplatinumlimit(response.data.platinum_limit)
             await AsyncStorage.setItem('user',JSON.stringify(response.data))
+            let ads=await AsyncStorage.getItem('ads')
             if(response.data.app_intro==0){
-              AdMobInterstitial.showAd()
+              if(ads==='google'){
+                AdMobInterstitial.showAd()
+              }
+              else{
+                InterstitialAdManager.showAd("IMG_16_9_APP_INSTALL#2029572424039676_2029575330706052")
+                .then((didClick) => {})
+                .catch((error) => {});
+              }
               this.props.navigation.replace('Appintro');
             }
             else{
-              AdMobInterstitial.showAd()
+              if(ads==='google'){
+                AdMobInterstitial.showAd()
+              }
+              else{
+                InterstitialAdManager.showAd("195566716011557_195566752678220")
+                .then((didClick) => {})
+                .catch((error) => {});
+              }
               this.props.navigation.replace('Home');
             }
           }
           else{
-            AdMobInterstitial.showAd()
+            if(ads==='google'){
+              AdMobInterstitial.showAd()
+            }
+            else{
+              InterstitialAdManager.showAd("IMG_16_9_APP_INSTALL#2029572424039676_2029575330706052")
+              .then((didClick) => {})
+              .catch((error) => {});
+            }
             this.props.navigation.replace('Login');
           }
         })

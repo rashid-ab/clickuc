@@ -31,10 +31,12 @@ class Crate extends Component {
           limit:this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit,
           image:this.props.route.params.title=='Supply Crate'?require('../assets/supply.png'):this.props.route.params.title=='Classic Crate'?require('../assets/classics.png'):require('../assets/premium.png'),
           Loadingvisible:true,
-          ads:''
+          ads:'',
+          banner:'google'
         };
     }
     adloading=()=>{
+      if(this.state.limit>3){
       AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
       AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
       AdMobInterstitial.requestAd();
@@ -44,14 +46,19 @@ class Crate extends Component {
         AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
           await AsyncStorage.setItem('ads','');
         })
+      }
+      else{
+        AdMobRewarded.setAdUnitID(Ad.reward_id);
+        AdMobRewarded.requestAd();
+      }
     }
     componentDidMount=()=>{
-      // this.focusListener = this.props.navigation.addListener("focus", () => {
+      this.focusListener = this.props.navigation.addListener("focus", () => {
         this.setState({
           coins:this.props.route.params.title=='Supply Crate'?silverNumbers[Math.floor(Math.random()*silverNumbers.length)]:this.props.route.params.title=='Classic Crate'?goldenNumbers[Math.floor(Math.random()*goldenNumbers.length)]:platinumNumbers[Math.floor(Math.random()*platinumNumbers.length)],
           limit:this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit
         })
-        if(this.state.limit>0){
+        if(this.state.limit>3){
           AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
           AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
           AdMobInterstitial.requestAd()
@@ -61,18 +68,16 @@ class Crate extends Component {
           AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
             await AsyncStorage.setItem('ads','');
           })
-          
-          
         }
         else{
           AdMobRewarded.setAdUnitID(Ad.reward_id);
           AdMobRewarded.requestAd();
         }
     setTimeout(()=>{this.setState({Loadingvisible: false})}, 3000)
-      // })
+      })
     }
     interstitial_ad=async()=>{
-      let ads=await AsyncStorage.getItem('ads','');
+      let ads=await AsyncStorage.getItem('ads');
       if(ads=="google"){
         console.log('show')
         AdMobInterstitial.showAd()
@@ -82,7 +87,7 @@ class Crate extends Component {
         });
       }
       else{
-        InterstitialAdManager.showAd("IMG_16_9_APP_INSTALL#2029572424039676_2029575330706052")
+        InterstitialAdManager.showAd("195566716011557_195566752678220")
         .then((didClick) => {})
         .catch((error) => {});
           this.adloading();
@@ -239,7 +244,7 @@ class Crate extends Component {
                     <View style={{width:wp('60%'),height:hp('30%'),borderRadius:20,justifyContent:'center',alignItems:'center',backgroundColor:'white',shadowColor: '#474747',shadowOffset: {width: 0,height: 6,},shadowOpacity: 0.37,shadowRadius: 7.49,elevation: 12,}}>
                         <View style={{ width: wp('50%'), height: hp('25%'),borderRadius:20 }}>
                             <Animatable.View animation="pulse" easing="ease-in-out" iterationCount="infinite" style={{ width: wp('50%'), height: hp('25%'),borderRadius:30,alignItems:'center',justifyContent:'center',flexDirection:'row' }}>
-                                <Image source={require('../assets/playbutton.png')} style={{width:wp('31%'),height:hp('19%')}} />
+                                <Image source={require('../assets/playbutton.png')} style={{width:wp('40%'),height:hp('19%')}} />
                             </Animatable.View>
                         </View>
                     </View>
@@ -269,12 +274,20 @@ class Crate extends Component {
                     </View>
                 </Modal>
             </View>
-            <AdMobBanner
-              adSize="fullBanner"
-              adUnitID={Ad.banner_id}
-              testDevices={[AdMobBanner.simulatorId]}
-              onAdFailedToLoad={error => console.error(error)}
-            />
+            {this.state.banner=='google'?
+                <AdMobBanner
+                adSize="fullBanner"
+                adUnitID={Ad.banner_id}
+                testDevices={[AdMobBanner.simulatorId]}
+                onAdFailedToLoad={error => this.setState({banner:'facebook'})}
+                />:
+                <BannerView
+                placementId="195566716011557_195566766011552"
+                type="standard"
+                onPress={() => console.log('click')}
+                onLoad={() => console.log('loaded')}
+                onError={(err) => this.setState({banner:'google'})}
+            />}
             </View>
         )
     }

@@ -37,19 +37,51 @@ class MyWallet extends Component {
     };
   }
   componentDidMount =async () => {
-    console.log(this.props.route)
+    this.focusListener = this.props.navigation.addListener("focus", async() => {
     AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
     AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
     AdMobInterstitial.requestAd();
+    AdMobInterstitial.addEventListener('adLoaded',async () => {
+      await AsyncStorage.setItem('ads','google');
+    })
+    AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
+      await AsyncStorage.setItem('ads','');
+    })
+  })
   }
   
-  ad=()=>{
-    AdMobInterstitial.showAd()
-    AdMobInterstitial.addEventListener("adClosed", () => {
-    AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
+  ad=async ()=>{
+    
+    let ads=await AsyncStorage.getItem('ads');
+      if(ads=="google"){
+        AdMobInterstitial.showAd()
+        AdMobInterstitial.addEventListener("adClosed",async () => {
+          await AsyncStorage.setItem('ads','');
+          AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
     AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
     AdMobInterstitial.requestAd();
-    });
+    AdMobInterstitial.addEventListener('adLoaded',async () => {
+      await AsyncStorage.setItem('ads','google');
+    })
+    AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
+      await AsyncStorage.setItem('ads','');
+    })
+        });
+      }
+      else{
+        InterstitialAdManager.showAd("195566716011557_195566752678220")
+        .then((didClick) => {})
+        .catch((error) => {});
+        AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
+        AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+        AdMobInterstitial.requestAd();
+        AdMobInterstitial.addEventListener('adLoaded',async () => {
+          await AsyncStorage.setItem('ads','google');
+        })
+        AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
+          await AsyncStorage.setItem('ads','');
+        })
+      }
   }
   onClickListener = (viewId) => {
     if(this.state.ucs==''){
@@ -176,7 +208,7 @@ class MyWallet extends Component {
           onAdFailedToLoad={error => this.setState({ads:'facebook'})}
           />:
         <BannerView
-          placementId="IMG_16_9_APP_INSTALL#YOUR_PLACEMENT_ID"
+          placementId="195566716011557_195566766011552"
           type="standard"
           onPress={() => console.log('click')}
           onLoad={() => console.log('loaded')}
