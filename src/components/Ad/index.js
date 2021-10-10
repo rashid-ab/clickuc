@@ -1,8 +1,25 @@
+
+
+//    Test Keys
 export default ad={
     
 
 
-    banner_id:"ca-app-pub-1882099794691960/9572768610",
-    Interstitial_id:"ca-app-pub-1882099794691960/7193167226",
-    reward_id:"ca-app-pub-1882099794691960/5740145445",
+    banner_id:"ca-app-pub-3940256099942544/6300978111",
+    Interstitial_video_id:"ca-app-pub-3940256099942544/1033173712",
+    Interstitial_id:"ca-app-pub-3940256099942544/1033173712",
+    reward_id:"ca-app-pub-3940256099942544/5224354917",
 }
+
+
+   // Real Keys
+
+//    export default ad={
+    
+
+
+//     banner_id:"ca-app-pub-3940256099942544/6300978111",
+//     Interstitial_video_id:"ca-app-pub-3940256099942544/1033173712",
+//     Interstitial_id:"ca-app-pub-3940256099942544/1033173712",
+//     reward_id:"ca-app-pub-3940256099942544/5224354917",
+// }

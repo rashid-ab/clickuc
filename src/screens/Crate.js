@@ -1,6 +1,6 @@
 
 import React, { Component } from 'react';
-import { View ,Text,Modal,StyleSheet,Pressable,Image,Dimensions,Alert, TouchableOpacity} from 'react-native';
+import { View ,Text,Modal,StyleSheet,Pressable,Image,Dimensions,Alert, TouchableOpacity,Animated} from 'react-native';
 import Header from '../components/header';
 import url from '../components/url'
 import axios from 'axios'
@@ -11,12 +11,14 @@ import * as Animatable from 'react-native-animatable';
 import {AlertMessage} from '../components/Alert'
 import NetInfo from "@react-native-community/netinfo";
 import { InterstitialAdManager } from 'react-native-fbads';
+import  CountDown  from 'react-native-countdown-component';
 import {
   AdMobBanner,
   AdMobInterstitial,
   AdMobRewarded,
 } from 'react-native-admob-alpha'
 import Ad from '../components/Ad'
+import FAd from '../components/FAD'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 const screeWidth = Dimensions.get('window').width
 const silverNumbers=[8,9,10,11,12,13,14,15,16,17,18,19,20]
@@ -32,46 +34,69 @@ class Crate extends Component {
           image:this.props.route.params.title=='Supply Crate'?require('../assets/supply.png'):this.props.route.params.title=='Classic Crate'?require('../assets/classics.png'):require('../assets/premium.png'),
           Loadingvisible:true,
           ads:'',
-          banner:'google'
+          banner:'google',
+          timer:false
         };
     }
     adloading=()=>{
       if(this.state.limit>3){
-      AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
-      AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
-      AdMobInterstitial.requestAd();
-      AdMobInterstitial.addEventListener('adLoaded',async () => {
-          await AsyncStorage.setItem('ads','google');
-          console.log('google1')})
-        AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
-          await AsyncStorage.setItem('ads','');
-        })
+        try {
+          AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
+          AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+          AdMobInterstitial.requestAd();
+          AdMobInterstitial.addEventListener('adLoaded',async () => {
+              await AsyncStorage.setItem('ads','google');
+              console.log('google1')
+            })
+            AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
+              await AsyncStorage.setItem('ads','');
+            })
+      }
+      catch(e){
+        console.log('Error',e)
+      }
       }
       else{
-        AdMobRewarded.setAdUnitID(Ad.reward_id);
-        AdMobRewarded.requestAd();
+        try{
+          AdMobRewarded.setAdUnitID(Ad.reward_id);
+          AdMobRewarded.requestAd();
+        }
+        catch(e){
+          console.log('Error',e)
+        }
       }
     }
     componentDidMount=()=>{
-      this.focusListener = this.props.navigation.addListener("focus", () => {
+      this.focusListener = this.props.navigation.addListener("focus", async() => {
         this.setState({
           coins:this.props.route.params.title=='Supply Crate'?silverNumbers[Math.floor(Math.random()*silverNumbers.length)]:this.props.route.params.title=='Classic Crate'?goldenNumbers[Math.floor(Math.random()*goldenNumbers.length)]:platinumNumbers[Math.floor(Math.random()*platinumNumbers.length)],
-          limit:this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit
+          limit:this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit,
+          timer:await AsyncStorage.getItem('timer')
         })
         if(this.state.limit>3){
-          AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
-          AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
-          AdMobInterstitial.requestAd()
-          AdMobInterstitial.addEventListener('adLoaded',async () => {
-            await AsyncStorage.setItem('ads','google');
-            console.log('google2')})
-          AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
-            await AsyncStorage.setItem('ads','');
-          })
+          try {
+            AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
+            AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+            AdMobInterstitial.requestAd()
+            AdMobInterstitial.addEventListener('adLoaded',async () => {
+              await AsyncStorage.setItem('ads','google');
+              console.log('google2')})
+            AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
+              await AsyncStorage.setItem('ads','');
+            })
+        }
+        catch (e) {
+          console.log('Error',e)
+          }
         }
         else{
-          AdMobRewarded.setAdUnitID(Ad.reward_id);
-          AdMobRewarded.requestAd();
+          try {
+            AdMobRewarded.setAdUnitID(Ad.reward_id);
+            AdMobRewarded.requestAd();
+          }
+          catch (e) {
+            console.log('Error',e)
+          }
         }
     setTimeout(()=>{this.setState({Loadingvisible: false})}, 3000)
       })
@@ -87,7 +112,7 @@ class Crate extends Component {
         });
       }
       else{
-        InterstitialAdManager.showAd("195566716011557_195566752678220")
+        InterstitialAdManager.showAd(FAd.Interstitial_id)
         .then((didClick) => {})
         .catch((error) => {});
           this.adloading();
@@ -125,7 +150,7 @@ class Crate extends Component {
 
         }
           if(response.message=='success'){
-            this.setState({limit:10});
+            this.setState({limit:3});
             this.props.route.params.title=='Supply Crate'?this.props.getsilverlimit(10):this.props.route.params.title=='Classic Crate'?this.props.getgoldenlimit(10):this.props.getplatinumlimit(10)
           }
           else{
@@ -173,9 +198,13 @@ class Crate extends Component {
               console.log(adss)
               this.setState(
                 {
-                  limit:response.limit
+                  limit:response.limit,
+                  timer:response.limit==0?true:false
                 },
               );
+              if(response.limit==0){
+                await AsyncStorage.setItem('timer',true)
+              }
               if(adss==0){
                 this.interstitial_ad();
                 this.props.getads(3)
@@ -211,11 +240,49 @@ class Crate extends Component {
           await  this.setState({Loadingvisible:false})
         }, 1000);
       };
+      timer=async()=>{
+        await AsyncStorage.setItem('timer',JSON.stringify(false));
+        this.setState({timer:false,isVisible:false})}
     render() {
         return (
           <View style={{flex:1,backgroundColor:'black'}}>
             <Header title={this.props.route.params.title} route="Crate" navigation={this.props.navigation}/>
             <Loader visible={this.state.Loadingvisible} />
+            <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.isVisible}
+                    onRequestClose={() => {
+                        Alert.alert("Collect It First!.");
+                    }}
+                    >
+                    <View style={styles.centeredView}>
+                      {this.state.timer?
+                      <View style={styles.modalView}>
+                        <CountDown
+                          until={10}
+                          onFinish={() => this.timer()}
+                          onPress={() => console.log('Take')}
+                          size={20}
+                        />
+                      </View>   :
+                        <View style={styles.modalView}>
+                          <Image source={this.state.image}  style={{width:wp('50%'),height:hp('27%')}}/>
+                          <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',marginVertical:20}}>
+                            <Image source={require('../assets/coin.png')}  style={{width:30,height:30}}/>
+                            <Text style={styles.modalText}>x {this.state.coins}</Text>
+                          </View>
+                        <Pressable
+                            style={[styles.button, styles.buttonClose]}
+                            onPress={() => this.reset()}
+                        >
+                            <Text style={styles.textStyle}>Collect</Text>
+                        </Pressable>
+                        </View>
+                        }
+                   
+                    </View>
+                </Modal>
             <View style={{flex:.92,alignItems:'center',}}>
                 <View style={{flex:.1,justifyContent:'center',alignItems:'center'}}>
                     <Text style={{fontSize:hp('3%'),color:'white',fontWeight:'bold'}}>{this.props.route.params.title}</Text>
@@ -249,30 +316,7 @@ class Crate extends Component {
                         </View>
                     </View>
                 </TouchableOpacity>}
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={this.state.isVisible}
-                    onRequestClose={() => {
-                        Alert.alert("Collect It First!.");
-                    }}
-                    >
-                    <View style={styles.centeredView}>
-                        <View style={styles.modalView}>
-                          <Image source={this.state.image}  style={{width:wp('50%'),height:hp('27%')}}/>
-                          <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center',marginVertical:20}}>
-                            <Image source={require('../assets/coin.png')}  style={{width:30,height:30}}/>
-                            <Text style={styles.modalText}>x {this.state.coins}</Text>
-                          </View>
-                        <Pressable
-                            style={[styles.button, styles.buttonClose]}
-                            onPress={() => this.reset()}
-                        >
-                            <Text style={styles.textStyle}>Collect</Text>
-                        </Pressable>
-                        </View>
-                    </View>
-                </Modal>
+                
             </View>
             {this.state.banner=='google'?
                 <AdMobBanner
@@ -282,7 +326,7 @@ class Crate extends Component {
                 onAdFailedToLoad={error => this.setState({banner:'facebook'})}
                 />:
                 <BannerView
-                placementId="195566716011557_195566766011552"
+                placementId={FAd.banner_id}
                 type="standard"
                 onPress={() => console.log('click')}
                 onLoad={() => console.log('loaded')}

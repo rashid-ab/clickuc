@@ -9,7 +9,6 @@ import {AlertMessage} from '../components/Alert'
 import {
   AdMobInterstitial,
 } from 'react-native-admob-alpha'
-import Ad from '../components/Ad'
 // import VersionCheck from 'react-native-version-check';
 class Auth extends Component {
   constructor(props){
@@ -21,21 +20,6 @@ class Auth extends Component {
   componentDidMount =async () => {
      auth = await AsyncStorage.getItem('user')
      auth=JSON.parse(auth)
-     AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
-     AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
-     AdMobInterstitial.addEventListener('adLoaded',async () => {
-      await AsyncStorage.setItem('ads','google');
-      console.log('Google')
-     })
-      AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
-        await AsyncStorage.setItem('ads','');
-      })
-     AdMobInterstitial.requestAd();
-     if(auth==null){
-        this.props.navigation.replace('Login');
-     }
-     else{
-      
       axios({
         method: "POST",
         url: url + 'getUser',
@@ -46,7 +30,6 @@ class Auth extends Component {
       })
       .then(async({ data: response }) => {
         if(response.message=='failure'){
-          
             AlertMessage('Token Expired','Your Token Expired. Login again Please!','red')
             await AsyncStorage.setItem('user','');
             await AsyncStorage.setItem('fcmtoken','');
@@ -66,44 +49,19 @@ class Auth extends Component {
             await AsyncStorage.setItem('user',JSON.stringify(response.data))
             let ads=await AsyncStorage.getItem('ads')
             if(response.data.app_intro==0){
-              if(ads==='google'){
-                AdMobInterstitial.showAd()
-              }
-              else{
-                InterstitialAdManager.showAd("IMG_16_9_APP_INSTALL#2029572424039676_2029575330706052")
-                .then((didClick) => {})
-                .catch((error) => {});
-              }
               this.props.navigation.replace('Appintro');
             }
             else{
-              if(ads==='google'){
-                AdMobInterstitial.showAd()
-              }
-              else{
-                InterstitialAdManager.showAd("195566716011557_195566752678220")
-                .then((didClick) => {})
-                .catch((error) => {});
-              }
               this.props.navigation.replace('Home');
             }
           }
           else{
-            if(ads==='google'){
-              AdMobInterstitial.showAd()
-            }
-            else{
-              InterstitialAdManager.showAd("IMG_16_9_APP_INSTALL#2029572424039676_2029575330706052")
-              .then((didClick) => {})
-              .catch((error) => {});
-            }
             this.props.navigation.replace('Login');
           }
         })
         .catch(async function (response) {
           return AlertMessage('Connection Failed','Check Your Internet','red')
         });
-    }
         
   }
   render() {

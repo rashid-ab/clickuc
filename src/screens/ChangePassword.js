@@ -19,6 +19,7 @@ import url from '../components/url'
 import axios from 'axios';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { BannerView } from 'react-native-fbads';
+import FAd from '../components/FAD'
 export default class Home extends Component {
 
   constructor(props) {
@@ -110,7 +111,7 @@ export default class Home extends Component {
             onAdFailedToLoad={error => this.setState({ads:'facebook'})}
             />:
           <BannerView
-            placementId="195566716011557_195566766011552"
+            placementId={FAd.banner_id}
             type="standard"
             onPress={() => console.log('click')}
             onLoad={() => console.log('loaded')}

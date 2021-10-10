@@ -26,9 +26,9 @@ import { BannerView } from 'react-native-fbads';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { NativeAdsManager } from 'react-native-fbads';
 import AdComponent from '../components/NativeAd'
-import Backhandler from '../components/BackHandler'
+import FAd from '../components/FAD'
 const youWantToHandleTheBackButtonPress = true
-const adsManager = new NativeAdsManager('195566716011557_195566759344886');
+const adsManager = new NativeAdsManager(FAd.native_id);
 export default class Home extends Component {
   constructor(props) {
     super(props);
@@ -166,7 +166,7 @@ export default class Home extends Component {
           onAdFailedToLoad={error => this.setState({ads:'facebook'})}
           />:
         <BannerView
-        placementId="195566716011557_195566766011552"
+        placementId={FAd.banner_id}
         type="standard"
         onPress={() => console.log('click')}
         onLoad={() => console.log('loaded')}

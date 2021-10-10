@@ -24,6 +24,7 @@ import {AlertMessage} from '../components/Alert'
 import AsyncStorage from '@react-native-community/async-storage';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 import { BannerView } from 'react-native-fbads';
+import FAd from '../components/FAD'
 const uc = [60,300,600];
 class MyWallet extends Component {
   
@@ -69,7 +70,7 @@ class MyWallet extends Component {
         });
       }
       else{
-        InterstitialAdManager.showAd("195566716011557_195566752678220")
+        InterstitialAdManager.showAd(FAd.Interstitial_id)
         .then((didClick) => {})
         .catch((error) => {});
         AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
@@ -208,7 +209,7 @@ class MyWallet extends Component {
           onAdFailedToLoad={error => this.setState({ads:'facebook'})}
           />:
         <BannerView
-          placementId="195566716011557_195566766011552"
+          placementId={FAd.banner_id}
           type="standard"
           onPress={() => console.log('click')}
           onLoad={() => console.log('loaded')}
