@@ -15,7 +15,6 @@ import { connect } from 'react-redux';
 import { ScrollView } from 'react-native-gesture-handler';
 import {AlertMessage} from '../components/Alert'
  class Login extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
@@ -68,6 +67,7 @@ import {AlertMessage} from '../components/Alert'
           }
         })
         .catch(function (response) {
+          this.setState({ Loadingvisible: false });
           AlertMessage('Connection Failed','Check Your Internet','red')
         });
     }

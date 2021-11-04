@@ -10,7 +10,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import * as Animatable from 'react-native-animatable';
 import {AlertMessage} from '../components/Alert'
 import NetInfo from "@react-native-community/netinfo";
-import { InterstitialAdManager } from 'react-native-fbads';
+import { InterstitialAdManager,BannerView } from 'react-native-fbads';
 import  CountDown  from 'react-native-countdown-component';
 import {
   AdMobBanner,
@@ -21,9 +21,9 @@ import Ad from '../components/Ad'
 import FAd from '../components/FAD'
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
 const screeWidth = Dimensions.get('window').width
-const silverNumbers=[8,9,10,11,12,13,14,15,16,17,18,19,20]
-const goldenNumbers=[10,16,17,18,19,20,21,22,23,24,24,25,26,27,28,29,30]
-const platinumNumbers=[15,19,20,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40]
+const silverNumbers=[8,9,10,11,12,13,0,14,0,15,8,9,0,10,11,12,0,13,16,17,18,19,20]
+const goldenNumbers=[10,11,12,13,14,0,12,13,10,11,12,13,14,13,0,15,14,0,16,17,0,30]
+const platinumNumbers=[15,16,15,17,18,0,19,20,16,15,17,18,0,21,22,23,24,0,16,15,17,18,25,26,40]
 class Crate extends Component {
     constructor(props) {
         super(props);
@@ -66,8 +66,8 @@ class Crate extends Component {
         }
       }
     }
-    componentDidMount=()=>{
-      this.focusListener = this.props.navigation.addListener("focus", async() => {
+    componentDidMount=async()=>{
+      // this.focusListener = this.props.navigation.addListener("focus", async() => {
         this.setState({
           coins:this.props.route.params.title=='Supply Crate'?silverNumbers[Math.floor(Math.random()*silverNumbers.length)]:this.props.route.params.title=='Classic Crate'?goldenNumbers[Math.floor(Math.random()*goldenNumbers.length)]:platinumNumbers[Math.floor(Math.random()*platinumNumbers.length)],
           limit:this.props.route.params.title=='Supply Crate'?this.props.silverLimit:this.props.route.params.title=='Classic Crate'?this.props.goldenLimit:this.props.platinumLimit,
@@ -93,13 +93,14 @@ class Crate extends Component {
           try {
             AdMobRewarded.setAdUnitID(Ad.reward_id);
             AdMobRewarded.requestAd();
+            
           }
           catch (e) {
             console.log('Error',e)
           }
         }
     setTimeout(()=>{this.setState({Loadingvisible: false})}, 3000)
-      })
+      // })
     }
     interstitial_ad=async()=>{
       let ads=await AsyncStorage.getItem('ads');
@@ -150,7 +151,7 @@ class Crate extends Component {
 
         }
           if(response.message=='success'){
-            this.setState({limit:3});
+            this.setState({limit:10});
             this.props.route.params.title=='Supply Crate'?this.props.getsilverlimit(10):this.props.route.params.title=='Classic Crate'?this.props.getgoldenlimit(10):this.props.getplatinumlimit(10)
           }
           else{
@@ -173,12 +174,20 @@ class Crate extends Component {
         else{
           return AlertMessage('Connection Failed','Check Your Internet','red')
         }
-        var scratch_url=this.props.route.params.title=='Supply Crate'?'silver_coins':this.props.route.params.title=='Classic Crate'?'golden_coins':'platinum_coins'
+        var crate_url=this.props.route.params.title=='Supply Crate'?'silver_coins':this.props.route.params.title=='Classic Crate'?'golden_coins':'platinum_coins'
         var newCoins=parseInt(this.props.coins) + parseInt(this.state.coins);
-        var newUC=newCoins/2000;
+        var newUC=newCoins/500;
+        let adss=this.props.ads-1
+        if(adss==0){
+          this.interstitial_ad();
+          this.props.getads(4)
+        }
+        else{
+          this.props.getads(adss)
+        }
         axios({
           method: "POST",
-          url: url + scratch_url,
+          url: url + crate_url,
           data: {
             email:this.props.user.email,
             coins: this.state.coins,
@@ -194,8 +203,11 @@ class Crate extends Component {
                 this.props.navigation.replace('Login')
             }
             if(response.message=='success'){
-              let adss=this.props.ads-1
+              
               console.log(adss)
+              this.props.getcoins(response.coins)
+              this.props.getuc(response.uc)
+              this.props.route.params.title=='Supply Crate'?this.props.getsilverlimit(response.limit):this.props.route.params.title=='Classic Crate'?this.props.getgoldenlimit(response.limit):this.props.getplatinumlimit(response.limit)
               this.setState(
                 {
                   limit:response.limit,
@@ -205,17 +217,6 @@ class Crate extends Component {
               if(response.limit==0){
                 await AsyncStorage.setItem('timer',true)
               }
-              if(adss==0){
-                this.interstitial_ad();
-                this.props.getads(3)
-              }
-              else{
-                this.props.getads(adss)
-              }
-              this.props.getcoins(response.coins)
-              this.props.getuc(response.uc)
-              this.props.route.params.title=='Supply Crate'?this.props.getsilverlimit(response.limit):this.props.route.params.title=='Classic Crate'?this.props.getgoldenlimit(response.limit):this.props.getplatinumlimit(response.limit)
-              
             }
             else{
               this.setState({ isVisible: false });
@@ -238,7 +239,7 @@ class Crate extends Component {
         );
         setTimeout(async() => {
           await  this.setState({Loadingvisible:false})
-        }, 1000);
+        }, 1500);
       };
       timer=async()=>{
         await AsyncStorage.setItem('timer',JSON.stringify(false));
@@ -318,20 +319,24 @@ class Crate extends Component {
                 </TouchableOpacity>}
                 
             </View>
-            {this.state.banner=='google'?
-                <AdMobBanner
-                adSize="fullBanner"
-                adUnitID={Ad.banner_id}
-                testDevices={[AdMobBanner.simulatorId]}
-                onAdFailedToLoad={error => this.setState({banner:'facebook'})}
-                />:
-                <BannerView
-                placementId={FAd.banner_id}
-                type="standard"
-                onPress={() => console.log('click')}
-                onLoad={() => console.log('loaded')}
-                onError={(err) => this.setState({banner:'google'})}
-            />}
+            
+              <View style={{position:'absolute',bottom:20}}>
+                {this.state.banner=='google'?
+                  <AdMobBanner
+                  adSize="fullBanner"
+                  adUnitID={Ad.banner_id}
+                  testDevices={[AdMobBanner.simulatorId]}
+                  onAdFailedToLoad={error => this.setState({banner:'facebook'})}
+                  />:
+                  <BannerView
+                  placementId={FAd.banner_id}
+                  type="standard"
+                  onPress={() => console.log('click')}
+                  onLoad={() => console.log('loaded')}
+                  onError={(err) => this.setState({banner:'google'})}
+                />
+                }
+             </View>
             </View>
         )
     }

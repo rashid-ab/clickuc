@@ -14,6 +14,8 @@ target 'clicki' do
 
   pod 'react-native-background-timer', :path => '../node_modules/react-native-background-timer'
 
+  pod 'react-native-fbsdk', :path => '../node_modules/react-native-fbsdk'
+
   target 'clickiTests' do
     inherit! :complete
     # Pods for testing

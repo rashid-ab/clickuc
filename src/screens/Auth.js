@@ -20,6 +20,10 @@ class Auth extends Component {
   componentDidMount =async () => {
      auth = await AsyncStorage.getItem('user')
      auth=JSON.parse(auth)
+     if(auth==null){
+      this.props.navigation.replace('Login');
+   }
+   else{
       axios({
         method: "POST",
         url: url + 'getUser',
@@ -62,7 +66,7 @@ class Auth extends Component {
         .catch(async function (response) {
           return AlertMessage('Connection Failed','Check Your Internet','red')
         });
-        
+   }  
   }
   render() {
     return (

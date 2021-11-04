@@ -23,7 +23,7 @@ import { connect } from 'react-redux';
 import {AlertMessage} from '../components/Alert'
 import AsyncStorage from '@react-native-community/async-storage';
 import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-import { BannerView } from 'react-native-fbads';
+import { BannerView,InterstitialAdManager } from 'react-native-fbads';
 import FAd from '../components/FAD'
 const uc = [60,300,600];
 class MyWallet extends Component {
@@ -38,7 +38,7 @@ class MyWallet extends Component {
     };
   }
   componentDidMount =async () => {
-    this.focusListener = this.props.navigation.addListener("focus", async() => {
+    // this.focusListener = this.props.navigation.addListener("focus", async() => {
     AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
     AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
     AdMobInterstitial.requestAd();
@@ -48,7 +48,7 @@ class MyWallet extends Component {
     AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
       await AsyncStorage.setItem('ads','');
     })
-  })
+  // })
   }
   
   ad=async ()=>{
@@ -59,9 +59,9 @@ class MyWallet extends Component {
         AdMobInterstitial.addEventListener("adClosed",async () => {
           await AsyncStorage.setItem('ads','');
           AdMobInterstitial.setAdUnitID(Ad.Interstitial_id);
-    AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
-    AdMobInterstitial.requestAd();
-    AdMobInterstitial.addEventListener('adLoaded',async () => {
+          AdMobInterstitial.setTestDevices([AdMobInterstitial.simulatorId]);
+          AdMobInterstitial.requestAd();
+          AdMobInterstitial.addEventListener('adLoaded',async () => {
       await AsyncStorage.setItem('ads','google');
     })
     AdMobInterstitial.addEventListener('adFailedToLoad',async () => {
@@ -86,13 +86,13 @@ class MyWallet extends Component {
   }
   onClickListener = (viewId) => {
     if(this.state.ucs==''){
-      return AertMessage('Error','Please Select UC Package!','red')
+      return AlertMessage('Error','Please Select UC Package!','red')
     }
     if(this.state.id==''){
       return AlertMessage('Error','Enter Your PUBG ID','red')
     }
     if(this.state.id.length<10 || this.state.id.length>10){
-      return AlertMessage('Error','Your PUBG ID should be 10 characters.!','red')
+      return AlertMessage('Error','Your PUBG ID should be 10 digits.!','red')
       
     }
     if(this.props.uc<this.state.ucs){
@@ -165,7 +165,7 @@ class MyWallet extends Component {
             <Text style={{fontWeight:'bold',fontSize:hp('2.0%'),color:'white'}}> X {this.props.uc}</Text>
           </View>
           <Text style={{color:'white'}}>Minimum Redeem = 60UC</Text>
-          <Text style={{color:'white'}}>2000 coins = 1UC</Text>
+          <Text style={{color:'white'}}>500 coins = 1UC</Text>
           <Text style={{color:'white'}}>50th redeem = UC+UC</Text>
         </View>
         <View style={styles.inputView} >
@@ -176,7 +176,7 @@ class MyWallet extends Component {
               placeholderTextColor="#d1d1d1"
               value={this.state.id}
               underlineColorAndroid='transparent'
-              onChangeText={(id) => this.state.id.length<10 && this.setState({id})}/>
+              onChangeText={(id) => this.setState({id})}/>
         </View>
         <View style={styles.inputView}>
         <SelectDropdown
@@ -201,20 +201,23 @@ class MyWallet extends Component {
           <Text style={styles.loginText}>Redeem</Text>
         </TouchableOpacity>
         </ScrollView>
-        {this.state.ads=='google'?
-          <AdMobBanner
-          adSize="fullBanner"
-          adUnitID={Ad.banner_id}
-          testDevices={[AdMobBanner.simulatorId]}
-          onAdFailedToLoad={error => this.setState({ads:'facebook'})}
-          />:
-        <BannerView
-          placementId={FAd.banner_id}
-          type="standard"
-          onPress={() => console.log('click')}
-          onLoad={() => console.log('loaded')}
-          onError={(err) => this.setState({ads:'google'})}
-        />}
+        <View style={{position:'absolute',bottom:20}}>
+          {this.state.banner=='google'?
+            <AdMobBanner
+            adSize="fullBanner"
+            adUnitID={Ad.banner_id}
+            testDevices={[AdMobBanner.simulatorId]}
+            onAdFailedToLoad={error => this.setState({banner:'facebook'})}
+            />:
+            <BannerView
+            placementId={FAd.banner_id}
+            type="standard"
+            onPress={() => console.log('click')}
+            onLoad={() => console.log('loaded')}
+            onError={(err) => this.setState({banner:'google'})}
+          />
+          }
+        </View>
       </View>
       
     );

@@ -1,1 +1,1 @@
-export default 'http://rabdesignstories.com/clickuc/api/';
+export default 'https://rabdesignstories.com/clickuc/api/';

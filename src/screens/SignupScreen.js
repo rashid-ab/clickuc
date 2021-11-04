@@ -43,9 +43,9 @@ login=()=>{
         this.props.goldenLimit(response.user.golden_limit)
         this.props.platinumLimit(response.user.platinum_limit)
         this.setState({ Loadingvisible: false });
-        if(response.user.app_intro==0){
-          return this.props.navigation.replace('Appintro');
-        }
+        // if(response.user.app_intro==0){
+        //   return this.props.navigation.replace('Appintro');
+        // }
           return this.props.navigation.replace('Home')
       }
       else{

@@ -158,20 +158,23 @@ export default class Home extends Component {
               
             </View>
         </Modal>
-          {this.state.ads=='google'?
-          <AdMobBanner
-          adSize="fullBanner"
-          adUnitID={Ad.banner_id}
-          testDevices={[AdMobBanner.simulatorId]}
-          onAdFailedToLoad={error => this.setState({ads:'facebook'})}
-          />:
-        <BannerView
-        placementId={FAd.banner_id}
-        type="standard"
-        onPress={() => console.log('click')}
-        onLoad={() => console.log('loaded')}
-        onError={(err) => this.setState({ads:'google'})}
-      />}
+        <View style={{position:'absolute',bottom:20}}>
+          {this.state.banner=='google'?
+            <AdMobBanner
+            adSize="fullBanner"
+            adUnitID={Ad.banner_id}
+            testDevices={[AdMobBanner.simulatorId]}
+            onAdFailedToLoad={error => this.setState({banner:'facebook'})}
+            />:
+            <BannerView
+            placementId={FAd.banner_id}
+            type="standard"
+            onPress={() => console.log('click')}
+            onLoad={() => console.log('loaded')}
+            onError={(err) => this.setState({banner:'google'})}
+          />
+          }
+        </View>
       {/* {this._renderBackHandler()} */}
       </View>
       </AndroidBackHandler>

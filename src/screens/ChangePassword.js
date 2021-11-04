@@ -103,20 +103,23 @@ export default class Home extends Component {
             <Text style={styles.loginText}>Send</Text>
           </TouchableOpacity>
         </View>
-          {this.state.ads=='google'?
+        <View style={{position:'absolute',bottom:20}}>
+                {this.state.banner=='google'?
             <AdMobBanner
             adSize="fullBanner"
             adUnitID={Ad.banner_id}
             testDevices={[AdMobBanner.simulatorId]}
-            onAdFailedToLoad={error => this.setState({ads:'facebook'})}
+            onAdFailedToLoad={error => this.setState({banner:'facebook'})}
             />:
-          <BannerView
+            <BannerView
             placementId={FAd.banner_id}
             type="standard"
             onPress={() => console.log('click')}
             onLoad={() => console.log('loaded')}
-            onError={(err) => this.setState({ads:'google'})}
-          />}
+            onError={(err) => this.setState({banner:'google'})}
+          />
+          }
+        </View>
       </View>
     );
   }
